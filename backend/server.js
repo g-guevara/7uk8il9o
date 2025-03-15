@@ -7,11 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB conectado"))
-  .catch(err => console.error("Error conectando a MongoDB", err));
+mongoose.connect(process.env.MONGO_URI, {
+  dbName: "uai-salas", // Asegura que esté conectando a la base de datos correcta
+})
 
-// Definir esquema para eventos
+
 const EventoSchema = new mongoose.Schema({
   Tipo: String,
   Evento: String,
