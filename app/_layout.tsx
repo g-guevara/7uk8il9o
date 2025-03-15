@@ -35,7 +35,7 @@ function StackNavigator() {
         <Stack.Screen 
           name="Search" 
           options={{ 
-            title: "Buscar",
+            title: "Salas de Hoy",
           }} 
         />
         <Stack.Screen 

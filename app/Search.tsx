@@ -137,12 +137,11 @@ const Search = () => {
 
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-      <Text style={[styles.title, isDarkMode && styles.darkTitle]}>Búsqueda Avanzada</Text>
       
       <View style={styles.searchContainer}>
         <TextInput
           style={[styles.searchInput, isDarkMode && styles.darkSearchInput]}
-          placeholder="Buscar por cualquier campo..."
+          placeholder="Buscar"
           placeholderTextColor={isDarkMode ? "#95a5a6" : "#7f8c8d"}
           value={searchText}
           onChangeText={setSearchText}
