@@ -158,6 +158,15 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
   },
+  instructionText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#34495e',
+    marginTop: 20,
+    marginBottom: 20,
+    paddingHorizontal: 20,
+    fontStyle: 'italic'
+  },
   darkFooterButton: {
     backgroundColor: "#2c3e50",
     borderColor: "#34495e",

@@ -28,18 +28,30 @@ const Search = () => {
 
   // Cargar eventos desde la API, eventos seleccionados y preferencia de tema
   useEffect(() => {
-    fetch("https://7uk8il9o.vercel.app/eventos")
-      .then(response => response.json())
-      .then((data: Evento[]) => {
-        setEventos(data);
-        // Inicialmente no mostramos resultados hasta que el usuario busque algo
-        setFilteredEventos([]);
-      })
-      .catch(error => console.error("Error al obtener eventos:", error));
-      
+    fetchEventos();
     loadSelectedEventos();
     loadThemePreference();
   }, []);
+
+  // Función para cargar eventos desde la API
+  const fetchEventos = () => {
+    fetch("https://7uk8il9o.vercel.app/eventos")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data: Evento[]) => {
+        setEventos(data);
+        // Mostrar todos los eventos al cargar la página
+        setFilteredEventos(data);
+      })
+      .catch(error => {
+        console.error("Error al obtener eventos:", error);
+        Alert.alert("Error", "No se pudieron cargar los eventos. Intente nuevamente.");
+      });
+  };
 
   // Cargar eventos seleccionados desde AsyncStorage
   const loadSelectedEventos = async () => {
@@ -50,6 +62,7 @@ const Search = () => {
       }
     } catch (error) {
       console.error("Error al cargar eventos seleccionados:", error);
+      Alert.alert("Error", "No se pudieron cargar tus eventos seleccionados.");
     }
   };
   
@@ -72,44 +85,43 @@ const Search = () => {
       await AsyncStorage.setItem("selectedEventos", jsonValue);
     } catch (error) {
       console.error("Error al guardar eventos seleccionados:", error);
+      Alert.alert("Error", "No se pudieron guardar tus selecciones.");
     }
   };
 
-  // Función de búsqueda avanzada - busca en todos los campos
-  const handleSearch = () => {
-    if (searchText.trim() === "") {
-      setFilteredEventos([]);
-      return;
+  // Añadir useEffect para filtrar en tiempo real como en Welcome
+  useEffect(() => {
+    if (searchText === "") {
+      setFilteredEventos(eventos);
+    } else {
+      const searchTerm = searchText.toLowerCase();
+      const results = eventos.filter(evento => 
+        evento.Evento.toLowerCase().includes(searchTerm) ||
+        evento.Tipo.toLowerCase().includes(searchTerm) ||
+        evento.Fecha.toLowerCase().includes(searchTerm) ||
+        evento.Inicio.toLowerCase().includes(searchTerm) ||
+        evento.Fin.toLowerCase().includes(searchTerm) ||
+        evento.Sala.toLowerCase().includes(searchTerm) ||
+        evento.Edificio.toLowerCase().includes(searchTerm) ||
+        evento.Campus.toLowerCase().includes(searchTerm)
+      );
+      
+      setFilteredEventos(results);
     }
-    
-    const searchTerm = searchText.toLowerCase();
-    const results = eventos.filter(evento => 
-      evento.Evento.toLowerCase().includes(searchTerm) ||
-      evento.Tipo.toLowerCase().includes(searchTerm) ||
-      evento.Fecha.toLowerCase().includes(searchTerm) ||
-      evento.Inicio.toLowerCase().includes(searchTerm) ||
-      evento.Fin.toLowerCase().includes(searchTerm) ||
-      evento.Sala.toLowerCase().includes(searchTerm) ||
-      evento.Edificio.toLowerCase().includes(searchTerm) ||
-      evento.Campus.toLowerCase().includes(searchTerm)
-    );
-    
-    setFilteredEventos(results);
-  };
+  }, [searchText, eventos]);
 
-  // Seleccionar o deseleccionar un evento
+  // Ya no necesitamos estas funciones al eliminar la selección de eventos
+  // Las mantenemos comentadas por si se necesitan en el futuro
+  /*
   const toggleEventoSelection = (evento: Evento) => {
-    // Verificar si el evento ya está seleccionado
     const isSelected = selectedEventos.some(e => e._id === evento._id);
     
     let updatedSelectedEventos: Evento[];
     
     if (isSelected) {
-      // Quitar de la selección
       updatedSelectedEventos = selectedEventos.filter(e => e._id !== evento._id);
       Alert.alert("Evento eliminado", `"${evento.Evento}" ha sido eliminado de tus selecciones.`);
     } else {
-      // Agregar a la selección
       updatedSelectedEventos = [...selectedEventos, evento];
       Alert.alert("Evento seleccionado", `"${evento.Evento}" ha sido agregado a tus selecciones.`);
     }
@@ -118,10 +130,10 @@ const Search = () => {
     saveSelectedEventos(updatedSelectedEventos);
   };
 
-  // Verificar si un evento está seleccionado
   const isEventoSelected = (evento: Evento) => {
     return selectedEventos.some(e => e._id === evento._id);
   };
+  */
 
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
@@ -134,14 +146,7 @@ const Search = () => {
           placeholderTextColor={isDarkMode ? "#95a5a6" : "#7f8c8d"}
           value={searchText}
           onChangeText={setSearchText}
-          onSubmitEditing={handleSearch}
         />
-        <TouchableOpacity
-          style={styles.searchButton}
-          onPress={handleSearch}
-        >
-          <Text style={styles.searchButtonText}>Buscar</Text>
-        </TouchableOpacity>
       </View>
       
       {searchText.trim() !== "" && filteredEventos.length === 0 ? (
@@ -155,6 +160,13 @@ const Search = () => {
           data={filteredEventos}
           keyExtractor={(item) => item._id}
           style={styles.eventList}
+          ListEmptyComponent={
+            filteredEventos.length === 0 ? (
+              <Text style={[styles.instructionText, isDarkMode && styles.darkText]}>
+                No se encontraron eventos que coincidan con la búsqueda.
+              </Text>
+            ) : null
+          }
           ListHeaderComponent={
             filteredEventos.length > 0 ? (
               <Text style={[styles.resultsCount, isDarkMode && styles.darkText]}>
@@ -163,49 +175,29 @@ const Search = () => {
             ) : null
           }
           renderItem={({ item }) => (
-            <TouchableOpacity
+            <View
               style={[
                 styles.eventItem,
-                isDarkMode && styles.darkEventItem,
-                isEventoSelected(item) && styles.selectedEventItem,
-                isDarkMode && isEventoSelected(item) && styles.darkSelectedEventItem,
+                isDarkMode && styles.darkEventItem
               ]}
-              onPress={() => toggleEventoSelection(item)}
             >
               <View style={styles.eventContent}>
                 <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
                   {item.Evento}
                 </Text>
+                <Text style={[styles.eventDetails, isDarkMode && styles.darkText]}>
+                  {item.Fecha} • {item.Inicio} - {item.Fin}
+                </Text>
+                <Text style={[styles.eventLocation, isDarkMode && styles.darkText]}>
+                  {item.Sala}, {item.Edificio}, {item.Campus}
+                </Text>
               </View>
-              
-              <View style={styles.selectionIndicator}>
-                {isEventoSelected(item) && (
-                  <Text style={styles.checkmark}>✓</Text>
-                )}
-              </View>
-            </TouchableOpacity>
+            </View>
           )}
         />
       )}
-      
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.footerButton, isDarkMode && styles.darkFooterButton]}
-          onPress={() => navigation.navigate("Welcome" as never)}
-        >
-          <Text style={[styles.footerButtonText, isDarkMode && styles.darkFooterButtonText]}>
-            Inicio
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.footerButton, isDarkMode && styles.darkFooterButton]}
-          onPress={() => navigation.navigate("Config" as never)}
-        >
-          <Text style={[styles.footerButtonText, isDarkMode && styles.darkFooterButtonText]}>
-            Configuración
-          </Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
+
+export default Search;
