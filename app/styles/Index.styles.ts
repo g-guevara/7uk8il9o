@@ -1,16 +1,22 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, StatusBar, Platform } from "react-native";
 
 export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#fff",
+    // This ensures proper padding for iOS status bar
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
+    paddingHorizontal: 20,
   },
   darkContainer: {
     backgroundColor: "#1a1a1a",
   },
   header: {
-    marginTop: 40,
+    marginTop: 20, // Reduced from 40 since SafeAreaView handles top spacing
     marginBottom: 32,
     alignItems: "center",
   },
@@ -105,7 +111,6 @@ export const styles = StyleSheet.create({
     zIndex: 10,
     padding: 5,
   },
-  
   footerText: {
     fontSize: 14,
     color: "#7f8c8d",

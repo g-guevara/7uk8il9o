@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { styles } from './styles/Welcome.styles'
+import { styles } from './styles/User.styles'
 
 // Definir el tipo de datos que vienen de la API
 interface Evento {

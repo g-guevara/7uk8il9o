@@ -1,102 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/Ionicons";
 import { styles } from "./styles/Index.styles";
+import EventStats from "./EventStats";
 
 const Main = () => {
   const [selectedEventos, setSelectedEventos] = useState<any[]>([]);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
   const navigation = useNavigation();
 
-  // Cargar datos guardados
+  // Load data when component mounts
   useEffect(() => {
-    loadSelectedEventos();
-    loadThemePreference();
+    loadData();
+    
+    // Set dark mode as default if it's first launch
+    setDefaultDarkMode();
   }, []);
+  
+  // Also refresh data when screen comes into focus (for theme changes from other screens)
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+      return () => {};
+    }, [])
+  );
 
-  // Cargar eventos seleccionados desde AsyncStorage
-  const loadSelectedEventos = async () => {
+  const setDefaultDarkMode = async () => {
     try {
+      // Check if we already set a preference
+      const value = await AsyncStorage.getItem("isDarkMode");
+      if (value === null) {
+        // No preference yet, set dark mode as default
+        await AsyncStorage.setItem("isDarkMode", "true");
+        setIsDarkMode(true);
+      }
+    } catch (error) {
+      console.error("Error setting default dark mode:", error);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      // Load theme preference
+      const themeValue = await AsyncStorage.getItem("isDarkMode");
+      if (themeValue !== null) {
+        setIsDarkMode(themeValue === "true");
+      }
+      
+      // Load selected events
       const jsonValue = await AsyncStorage.getItem("selectedEventos");
       if (jsonValue !== null) {
         setSelectedEventos(JSON.parse(jsonValue));
       }
     } catch (error) {
-      console.error("Error al cargar eventos seleccionados:", error);
-    }
-  };
-
-  // Cargar preferencia de tema desde AsyncStorage
-  const loadThemePreference = async () => {
-    try {
-      const value = await AsyncStorage.getItem("isDarkMode");
-      if (value !== null) {
-        setIsDarkMode(value === "true");
-      }
-    } catch (error) {
-      console.error("Error al cargar preferencia de tema:", error);
+      console.error("Error loading data:", error);
     }
   };
 
   return (
-    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-      {/* Botón de usuario en la esquina superior izquierda */}
-      <TouchableOpacity
-        style={styles.userIconButton}
-        onPress={() => navigation.navigate("Welcome" as never)}
-      >
-        <Icon name="person-circle-outline" size={30} color={isDarkMode ? "#fff" : "#000"} />
-      </TouchableOpacity>
+    <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkContainer]}>
+      <View style={[styles.container, isDarkMode && styles.darkContainer]}>
+        {/* Botón de usuario en la esquina superior izquierda */}
+        <TouchableOpacity
+          style={styles.userIconButton}
+          onPress={() => navigation.navigate("User" as never)}
+        >
+          <Icon 
+            name="person-circle-outline" 
+            size={40} 
+            color={isDarkMode ? "#fff" : "#000"} 
+          />
+        </TouchableOpacity>
 
-      <View style={styles.header}>
-        <Text style={[styles.title, isDarkMode && styles.darkTitle]}>Panel Principal</Text>
-        <Text style={[styles.subtitle, isDarkMode && styles.darkSubTitle]}>
-          Gestiona tus eventos universitarios
-        </Text>
-      </View>
-
-      <View style={styles.statsContainer}>
-        <View style={[styles.statCard, isDarkMode && styles.darkStatCard]}>
-          <Text style={[styles.statValue, isDarkMode && styles.darkText]}>
-            {selectedEventos.length}
+        <View style={styles.header}>
+          <Text style={[styles.title, isDarkMode && styles.darkTitle]}>
+            Panel Principal
           </Text>
-          <Text style={[styles.statLabel, isDarkMode && styles.darkSubText]}>
-            Eventos seleccionados
+          <Text style={[styles.subtitle, isDarkMode && styles.darkSubTitle]}>
+            Gestiona tus eventos universitarios
           </Text>
         </View>
+
+        {/* Componente de estadísticas y botones */}
+        <EventStats 
+          selectedEventos={selectedEventos} 
+          isDarkMode={isDarkMode} 
+          navigation={navigation} 
+        />
       </View>
-
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={[styles.mainButton, isDarkMode && styles.darkMainButton]}
-          onPress={() => navigation.navigate("Config" as never)}
-        >
-          <Text style={styles.mainButtonText}>Configuración</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.mainButton, isDarkMode && styles.darkMainButton]}
-          onPress={() => navigation.navigate("Search" as never)}
-        >
-          <Text style={styles.mainButtonText}>Buscar Eventos</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.mainButton, isDarkMode && styles.darkMainButton]}
-          onPress={() => navigation.navigate("Welcome" as never)}
-        >
-          <Text style={styles.mainButtonText}>Explorar Todos</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.footer}>
-        <Text style={[styles.footerText, isDarkMode && styles.darkSubText]}>
-          Desarrollado con ❤️ para la Universidad
-        </Text>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -20,36 +20,44 @@ interface Evento {
 
 const Config = () => {
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
   const navigation = useNavigation();
 
-  // Cargar eventos seleccionados y configuración del tema
+  // Cargar datos al iniciar
   useEffect(() => {
-    loadSelectedEventos();
-    loadThemePreference();
+    loadData();
+    ensureDefaultDarkMode();
   }, []);
 
-  // Cargar eventos seleccionados desde AsyncStorage
-  const loadSelectedEventos = async () => {
+  // Asegurar modo oscuro por defecto
+  const ensureDefaultDarkMode = async () => {
     try {
+      const value = await AsyncStorage.getItem("isDarkMode");
+      if (value === null) {
+        // No hay preferencia guardada, establecer modo oscuro
+        await AsyncStorage.setItem("isDarkMode", "true");
+        setIsDarkMode(true);
+      }
+    } catch (error) {
+      console.error("Error al establecer tema por defecto:", error);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      // Cargar preferencia de tema
+      const themeValue = await AsyncStorage.getItem("isDarkMode");
+      if (themeValue !== null) {
+        setIsDarkMode(themeValue === "true");
+      }
+      
+      // Cargar eventos seleccionados
       const jsonValue = await AsyncStorage.getItem("selectedEventos");
       if (jsonValue !== null) {
         setSelectedEventos(JSON.parse(jsonValue));
       }
     } catch (error) {
-      console.error("Error al cargar eventos seleccionados:", error);
-    }
-  };
-
-  // Cargar preferencia de tema desde AsyncStorage
-  const loadThemePreference = async () => {
-    try {
-      const value = await AsyncStorage.getItem("isDarkMode");
-      if (value !== null) {
-        setIsDarkMode(value === "true");
-      }
-    } catch (error) {
-      console.error("Error al cargar preferencia de tema:", error);
+      console.error("Error al cargar datos:", error);
     }
   };
 
@@ -63,10 +71,12 @@ const Config = () => {
     }
   };
 
-  // Guardar preferencia de tema en AsyncStorage
-  const saveThemePreference = async (value: boolean) => {
+  // Manejar el cambio de tema - Simplificado y mejorado
+  const handleThemeToggle = async (value: boolean) => {
     try {
+      setIsDarkMode(value);
       await AsyncStorage.setItem("isDarkMode", value.toString());
+      console.log("Tema guardado:", value ? "oscuro" : "claro");
     } catch (error) {
       console.error("Error al guardar preferencia de tema:", error);
     }
@@ -95,12 +105,6 @@ const Config = () => {
         }
       ]
     );
-  };
-
-  // Manejar el cambio de tema
-  const handleThemeToggle = (value: boolean) => {
-    setIsDarkMode(value);
-    saveThemePreference(value);
   };
 
   return (
