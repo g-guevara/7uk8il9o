@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text, View, FlatList } from "react-native";
 
-// Definir el tipo para los eventos
+// Definir el tipo de datos que vienen de la API
 interface Evento {
   _id: string;
   Tipo: string;
@@ -19,10 +19,10 @@ export default function Index() {
   const [eventos, setEventos] = useState<Evento[]>([]);
 
   useEffect(() => {
-    fetch("https://7uk8il9o.vercel.app/eventos")
+    fetch("https://7uk8il9o.vercel.app/eventos") // URL de la API en Vercel
       .then(response => response.json())
       .then((data: Evento[]) => setEventos(data))
-      .catch(error => console.error("Error al obtener datos:", error));
+      .catch(error => console.error("Error al obtener eventos:", error));
   }, []);
 
   return (
@@ -31,7 +31,9 @@ export default function Index() {
         data={eventos}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <Text>{item.Fecha} - {item.Evento} en {item.Sala}, {item.Campus}</Text>
+          <Text>
+            {item.Fecha} - {item.Evento} en {item.Sala}, {item.Campus}
+          </Text>
         )}
       />
     </View>
