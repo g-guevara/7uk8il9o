@@ -67,43 +67,38 @@ const Main = () => {
       />
       <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkContainer]}>
         <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-          {/* Botón de usuario en la esquina superior izquierda */}
+          {/* Botón de búsqueda en la esquina superior izquierda (cambiado) */}
           <View style={styles.leftSideContainer}>
             <TouchableOpacity
               style={styles.userIconButton}
-              onPress={() => navigation.navigate("User" as never)}
+              onPress={() => navigation.navigate("Search" as never)}
             >
-              <Icon name="person-circle-outline" size={55} color={isDarkMode ? "#fff" : "#000"} />
+              <Icon name="search-outline" size={35} color={isDarkMode ? "#fff" : "#000"} />
             </TouchableOpacity>
             
             <View style={styles.dateContainer}>
-  <Text style={[styles.dateWeekday, isDarkMode && styles.darkSubText]}>
-    {`Hoy, ${new Date().toLocaleString('es-ES', { weekday: 'long' }).charAt(0).toUpperCase() + new Date().toLocaleString('es-ES', { weekday: 'long' }).slice(1)}`}
-  </Text>                
-  
-  <View style={styles.dateRow}>
-    <Text style={[styles.dateDay, isDarkMode && styles.darkText]}>
-      {new Date().getDate()}
-    </Text>
-    <Text style={[styles.dateMonth, isDarkMode && styles.darkText]}>
-  {new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()}
-</Text>
-
-  </View>
-</View>
-
-
-
+              <Text style={[styles.dateWeekday, isDarkMode && styles.darkSubText]}>
+                {`Hoy, ${new Date().toLocaleString('es-ES', { weekday: 'long' }).charAt(0).toUpperCase() + new Date().toLocaleString('es-ES', { weekday: 'long' }).slice(1)}`}
+              </Text>                
+              
+              <View style={styles.dateRow}>
+                <Text style={[styles.dateDay, isDarkMode && styles.darkText]}>
+                  {new Date().getDate()}
+                </Text>
+                <Text style={[styles.dateMonth, isDarkMode && styles.darkText]}>
+                  {new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()}
+                </Text>
+              </View>
+            </View>
           </View>
 
-          {/* Botón de búsqueda en la esquina superior derecha */}
+          {/* Botón de usuario en la esquina superior derecha (cambiado) */}
           <TouchableOpacity
             style={styles.searchIconButton}
-            onPress={() => navigation.navigate("Search" as never)}
+            onPress={() => navigation.navigate("Config" as never)}
           >
-            <Icon name="search-outline" size={35} color={isDarkMode ? "#fff" : "#000"} />
+            <Icon name="person" size={35} color={isDarkMode ? "#fff" : "#000"} />
           </TouchableOpacity>
-
 
           {/* Componente de estadísticas y botones */}
           <EventStats 

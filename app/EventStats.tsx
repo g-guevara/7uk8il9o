@@ -24,12 +24,6 @@ const EventStats: React.FC<EventStatsProps> = ({ selectedEventos, isDarkMode, na
       </View>
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={[styles.mainButton, isDarkMode && styles.darkMainButton]}
-          onPress={() => navigation.navigate("Config" as never)}
-        >
-          <Text style={styles.mainButtonText}>Configuración</Text>
-        </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.mainButton, isDarkMode && styles.darkMainButton]}
