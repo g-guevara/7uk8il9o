@@ -1,13 +1,65 @@
+import React, { useEffect } from "react";
+import { StatusBar } from "react-native";
 import { Stack } from "expo-router";
+import { ThemeProvider, useTheme } from "./ThemeContext";
 
-export default function Layout() {
+// Componente interno que usa el contexto de tema
+function StackNavigator() {
+  const { isDarkMode, isThemeLoaded } = useTheme();
+
+  // Esperamos a que el tema esté cargado antes de renderizar
+  if (!isThemeLoaded) {
+    return null; // O un componente de carga
+  }
+
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="Search" options={{ title: "Buscar" }} />
-      <Stack.Screen name="Config" options={{ title: "Configuración" }} />
-      <Stack.Screen name="User" options={{ title: "Explore" }} />
-      {/* Aquí debería ir Profile */}
-    </Stack>
+    <>
+      <StatusBar 
+        backgroundColor={isDarkMode ? "#121212" : "#FFFFFF"} 
+        barStyle={isDarkMode ? "light-content" : "dark-content"} 
+        translucent={false}
+      />
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
+          },
+          headerTintColor: isDarkMode ? "#ffffff" : "#000000",
+          headerShadowVisible: false,
+          contentStyle: {
+            backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
+          },
+        }}
+      >
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="Search" 
+          options={{ 
+            title: "Buscar",
+          }} 
+        />
+        <Stack.Screen 
+          name="Config" 
+          options={{ 
+            title: "Configuración",
+          }} 
+        />
+        <Stack.Screen 
+          name="User" 
+          options={{ 
+            title: "Explore",
+          }} 
+        />
+      </Stack>
+    </>
+  );
+}
+
+// Componente principal que proporciona el contexto de tema
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <StackNavigator />
+    </ThemeProvider>
   );
 }

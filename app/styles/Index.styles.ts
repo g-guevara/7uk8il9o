@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#fff",
-    // This ensures proper padding for iOS status bar
+    // Añadir padding para StatusBar cuando es translúcido
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   container: {
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#1a1a1a",
   },
   header: {
-    marginTop: 20, // Reduced from 40 since SafeAreaView handles top spacing
+    marginTop: 20,
     marginBottom: 32,
     alignItems: "center",
   },

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Switch, TouchableOpacity, FlatList, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { useTheme } from "./ThemeContext";
 import { styles } from './styles/Config.styles'
 
 // Definir el tipo de datos que vienen de la API
@@ -20,44 +21,23 @@ interface Evento {
 
 const Config = () => {
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
-  const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
+  const { isDarkMode, toggleTheme, isThemeLoaded } = useTheme();
   const navigation = useNavigation();
 
-  // Cargar datos al iniciar
+  // Cargar eventos seleccionados
   useEffect(() => {
-    loadData();
-    ensureDefaultDarkMode();
+    loadSelectedEventos();
   }, []);
 
-  // Asegurar modo oscuro por defecto
-  const ensureDefaultDarkMode = async () => {
+  // Cargar eventos seleccionados desde AsyncStorage
+  const loadSelectedEventos = async () => {
     try {
-      const value = await AsyncStorage.getItem("isDarkMode");
-      if (value === null) {
-        // No hay preferencia guardada, establecer modo oscuro
-        await AsyncStorage.setItem("isDarkMode", "true");
-        setIsDarkMode(true);
-      }
-    } catch (error) {
-      console.error("Error al establecer tema por defecto:", error);
-    }
-  };
-
-  const loadData = async () => {
-    try {
-      // Cargar preferencia de tema
-      const themeValue = await AsyncStorage.getItem("isDarkMode");
-      if (themeValue !== null) {
-        setIsDarkMode(themeValue === "true");
-      }
-      
-      // Cargar eventos seleccionados
       const jsonValue = await AsyncStorage.getItem("selectedEventos");
       if (jsonValue !== null) {
         setSelectedEventos(JSON.parse(jsonValue));
       }
     } catch (error) {
-      console.error("Error al cargar datos:", error);
+      console.error("Error al cargar eventos seleccionados:", error);
     }
   };
 
@@ -68,17 +48,6 @@ const Config = () => {
       await AsyncStorage.setItem("selectedEventos", jsonValue);
     } catch (error) {
       console.error("Error al guardar eventos seleccionados:", error);
-    }
-  };
-
-  // Manejar el cambio de tema - Simplificado y mejorado
-  const handleThemeToggle = async (value: boolean) => {
-    try {
-      setIsDarkMode(value);
-      await AsyncStorage.setItem("isDarkMode", value.toString());
-      console.log("Tema guardado:", value ? "oscuro" : "claro");
-    } catch (error) {
-      console.error("Error al guardar preferencia de tema:", error);
     }
   };
 
@@ -107,6 +76,11 @@ const Config = () => {
     );
   };
 
+  // Si el tema no se ha cargado aún, podríamos mostrar un spinner o nada
+  if (!isThemeLoaded) {
+    return null;
+  }
+
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
       <Text style={[styles.title, isDarkMode && styles.darkTitle]}>Configuración</Text>
@@ -117,7 +91,7 @@ const Config = () => {
           <Text style={[styles.themeLabel, isDarkMode && styles.darkText]}>Modo oscuro</Text>
           <Switch
             value={isDarkMode}
-            onValueChange={handleThemeToggle}
+            onValueChange={toggleTheme}
             trackColor={{ false: "#ddd", true: "#3498db" }}
             thumbColor={isDarkMode ? "#fff" : "#f4f3f4"}
           />

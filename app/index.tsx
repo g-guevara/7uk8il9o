@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView, StatusBar } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -14,8 +14,6 @@ const Main = () => {
   // Load data when component mounts
   useEffect(() => {
     loadData();
-    
-    // Set dark mode as default if it's first launch
     setDefaultDarkMode();
   }, []);
   
@@ -60,37 +58,46 @@ const Main = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkContainer]}>
-      <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-        {/* Botón de usuario en la esquina superior izquierda */}
-        <TouchableOpacity
-          style={styles.userIconButton}
-          onPress={() => navigation.navigate("User" as never)}
-        >
-          <Icon 
-            name="person-circle-outline" 
-            size={40} 
-            color={isDarkMode ? "#fff" : "#000"} 
+    <>
+      {/* Configure StatusBar based on theme */}
+      <StatusBar 
+        backgroundColor={isDarkMode ? "#121212" : "#FFFFFF"} 
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        translucent={true}
+      />
+      
+      <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkContainer]}>
+        <View style={[styles.container, isDarkMode && styles.darkContainer]}>
+          {/* Botón de usuario en la esquina superior izquierda */}
+          <TouchableOpacity
+            style={styles.userIconButton}
+            onPress={() => navigation.navigate("User" as never)}
+          >
+            <Icon 
+              name="person-circle-outline" 
+              size={40} 
+              color={isDarkMode ? "#fff" : "#000"} 
+            />
+          </TouchableOpacity>
+
+          <View style={styles.header}>
+            <Text style={[styles.title, isDarkMode && styles.darkTitle]}>
+              Panel Principal
+            </Text>
+            <Text style={[styles.subtitle, isDarkMode && styles.darkSubTitle]}>
+              Gestiona tus eventos universitarios
+            </Text>
+          </View>
+
+          {/* Componente de estadísticas y botones */}
+          <EventStats 
+            selectedEventos={selectedEventos} 
+            isDarkMode={isDarkMode} 
+            navigation={navigation} 
           />
-        </TouchableOpacity>
-
-        <View style={styles.header}>
-          <Text style={[styles.title, isDarkMode && styles.darkTitle]}>
-            Panel Principal
-          </Text>
-          <Text style={[styles.subtitle, isDarkMode && styles.darkSubTitle]}>
-            Gestiona tus eventos universitarios
-          </Text>
         </View>
-
-        {/* Componente de estadísticas y botones */}
-        <EventStats 
-          selectedEventos={selectedEventos} 
-          isDarkMode={isDarkMode} 
-          navigation={navigation} 
-        />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 
