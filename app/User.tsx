@@ -101,13 +101,11 @@ const Welcome = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¡Bienvenido!</Text>
-      <Text style={styles.subtitle}>Busca y selecciona eventos de tu interés</Text>
-      
+
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
-          placeholder="Buscar eventos..."
+          placeholder="Buscar ramos 2025 - I"
           value={searchText}
           onChangeText={setSearchText}
         />

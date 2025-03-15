@@ -47,7 +47,7 @@ function StackNavigator() {
         <Stack.Screen 
           name="User" 
           options={{ 
-            title: "Explore",
+            title: "Agrega tus ramos",
           }} 
         />
       </Stack>

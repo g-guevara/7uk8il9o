@@ -166,7 +166,22 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 20,
     fontStyle: 'italic'
+  },loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
   },
+  
+  // Estilos para el texto del spinner de carga
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+  },
+  
+
   darkFooterButton: {
     backgroundColor: "#2c3e50",
     borderColor: "#34495e",

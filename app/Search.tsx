@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from './styles/Search.styles'
@@ -24,6 +24,7 @@ const Search = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Estado para controlar la carga
   const navigation = useNavigation();
 
   // Cargar eventos desde la API, eventos seleccionados y preferencia de tema
@@ -35,6 +36,7 @@ const Search = () => {
 
   // Función para cargar eventos desde la API
   const fetchEventos = () => {
+    setIsLoading(true); // Indicar que está cargando
     fetch("https://7uk8il9o.vercel.app/eventos")
       .then(response => {
         if (!response.ok) {
@@ -46,10 +48,12 @@ const Search = () => {
         setEventos(data);
         // Mostrar todos los eventos al cargar la página
         setFilteredEventos(data);
+        setIsLoading(false); // Finalizar la carga cuando los datos estén disponibles
       })
       .catch(error => {
         console.error("Error al obtener eventos:", error);
         Alert.alert("Error", "No se pudieron cargar los eventos. Intente nuevamente.");
+        setIsLoading(false); // Asegurarse de finalizar la carga incluso en caso de error
       });
   };
 
@@ -110,31 +114,6 @@ const Search = () => {
     }
   }, [searchText, eventos]);
 
-  // Ya no necesitamos estas funciones al eliminar la selección de eventos
-  // Las mantenemos comentadas por si se necesitan en el futuro
-  /*
-  const toggleEventoSelection = (evento: Evento) => {
-    const isSelected = selectedEventos.some(e => e._id === evento._id);
-    
-    let updatedSelectedEventos: Evento[];
-    
-    if (isSelected) {
-      updatedSelectedEventos = selectedEventos.filter(e => e._id !== evento._id);
-      Alert.alert("Evento eliminado", `"${evento.Evento}" ha sido eliminado de tus selecciones.`);
-    } else {
-      updatedSelectedEventos = [...selectedEventos, evento];
-      Alert.alert("Evento seleccionado", `"${evento.Evento}" ha sido agregado a tus selecciones.`);
-    }
-    
-    setSelectedEventos(updatedSelectedEventos);
-    saveSelectedEventos(updatedSelectedEventos);
-  };
-
-  const isEventoSelected = (evento: Evento) => {
-    return selectedEventos.some(e => e._id === evento._id);
-  };
-  */
-
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
       
@@ -148,22 +127,32 @@ const Search = () => {
         />
       </View>
       
-      {searchText.trim() !== "" && filteredEventos.length === 0 ? (
+      {isLoading ? (
+        // Mostrar spinner de carga mientras se obtienen los datos
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={isDarkMode ? "#FFFFFF" : "#000000"} />
+
+        </View>
+      ) : searchText.trim() !== "" && filteredEventos.length === 0 ? (
+        // Mostrar mensaje de no resultados cuando hay una búsqueda sin coincidencias
         <View style={styles.noResultsContainer}>
           <Text style={[styles.noResultsText, isDarkMode && styles.darkText]}>
             No se encontraron resultados para "{searchText}".
           </Text>
         </View>
       ) : (
+        // Mostrar la lista de eventos
         <FlatList
           data={filteredEventos}
           keyExtractor={(item) => item._id}
           style={styles.eventList}
           ListEmptyComponent={
-            filteredEventos.length === 0 ? (
-              <Text style={[styles.instructionText, isDarkMode && styles.darkText]}>
-                No se encontraron eventos que coincidan con la búsqueda.
-              </Text>
+            !isLoading && filteredEventos.length === 0 ? (
+              <View style={styles.noResultsContainer}>
+                <Text style={[styles.instructionText, isDarkMode && styles.darkText]}>
+                  No se encontraron eventos disponibles.
+                </Text>
+              </View>
             ) : null
           }
           ListHeaderComponent={

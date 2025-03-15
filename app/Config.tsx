@@ -83,10 +83,8 @@ const Config = () => {
 
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-      <Text style={[styles.title, isDarkMode && styles.darkTitle]}>Configuración</Text>
       
       <View style={styles.themeSection}>
-        <Text style={[styles.sectionTitle, isDarkMode && styles.darkText]}>Apariencia</Text>
         <View style={styles.themeToggleContainer}>
           <Text style={[styles.themeLabel, isDarkMode && styles.darkText]}>Modo oscuro</Text>
           <Switch
@@ -153,24 +151,7 @@ const Config = () => {
         )}
       </View>
       
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={[styles.footerButton, isDarkMode && styles.darkFooterButton]}
-          onPress={() => navigation.navigate("Welcome" as never)}
-        >
-          <Text style={[styles.footerButtonText, isDarkMode && styles.darkFooterButtonText]}>
-            Inicio
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.footerButton, isDarkMode && styles.darkFooterButton]}
-          onPress={() => navigation.navigate("Search" as never)}
-        >
-          <Text style={[styles.footerButtonText, isDarkMode && styles.darkFooterButtonText]}>
-            Buscar
-          </Text>
-        </TouchableOpacity>
-      </View>
+
     </View>
   );
 };
