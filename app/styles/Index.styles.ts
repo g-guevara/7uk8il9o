@@ -104,10 +104,82 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
   },
-  userIconButton: {
+  leftSideContainer: {
     position: "absolute",
     top: 10,
     left: 10,
+    zIndex: 10,
+  },
+  userIconButton: {
+    padding: 5,
+  },
+  // dateContainer: {j
+  //   marginTop: 10,
+  //   alignItems: "center",
+  //   flexDirection: "row",
+  // },
+  // dateDay: {
+  //   fontSize: 50,
+  //   color: "#2c3e50",
+  //   lineHeight: 70, // Asegura suficiente espacio vertical
+  //   marginRight: 15, 
+  //   fontWeight: "300",
+    
+  // },
+  // dateMonth: {
+  //   fontSize: 50,
+  //   color: "#2c3e50",
+  //   lineHeight: 70, // Asegura suficiente espacio vertical
+  //   fontWeight: "300"
+  // },
+  dateTextContainer: {
+    alignItems: "center", // Asegura que el texto esté centrado en columna
+  },
+
+
+
+
+  dateContainer: {
+    alignItems: "flex-start", // Alinea todo a la izquierda
+    justifyContent: "center",
+    marginLeft: 10, // Margen para que no quede pegado al borde
+  },
+  
+  dateWeekday: {
+    fontSize: 18, // Reduce un poco el tamaño del texto
+    color: "#2c3e50",
+    marginBottom: 2, // Reduce el espacio entre el día de la semana y el número
+    textAlign: "left",
+    fontWeight: "400",
+  },
+  
+  dateRow: {
+    flexDirection: "row", // Alinea el número del día y el mes en la misma línea
+    alignItems: "center", // Asegura que estén alineados correctamente
+    gap: 10, // Reduce el espacio entre el número y el mes
+  },
+  
+  dateDay: {
+    fontSize: 45, // Reduce un poco el tamaño del número
+    color: "#2c3e50",
+    lineHeight: 50, // Reduce el espacio vertical
+    fontWeight: "300",
+    transform: [{ scaleY: 0.95 }], // Ajusta la altura ligeramente
+  },
+  
+  dateMonth: {
+    fontSize: 45, // Reduce el tamaño del mes
+    color: "#2c3e50",
+    lineHeight: 50, // Reduce el espacio vertical
+    fontWeight: "300",
+    transform: [{ scaleY: 0.95 }], // Ajusta la altura ligeramente
+  },
+  
+  
+  searchIconButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
     zIndex: 10,
     padding: 5,
   },

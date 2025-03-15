@@ -16,7 +16,7 @@ const Main = () => {
     loadData();
     setDefaultDarkMode();
   }, []);
-  
+
   // Also refresh data when screen comes into focus (for theme changes from other screens)
   useFocusEffect(
     React.useCallback(() => {
@@ -46,7 +46,7 @@ const Main = () => {
       if (themeValue !== null) {
         setIsDarkMode(themeValue === "true");
       }
-      
+
       // Load selected events
       const jsonValue = await AsyncStorage.getItem("selectedEventos");
       if (jsonValue !== null) {
@@ -60,34 +60,50 @@ const Main = () => {
   return (
     <>
       {/* Configure StatusBar based on theme */}
-      <StatusBar 
-        backgroundColor={isDarkMode ? "#121212" : "#FFFFFF"} 
+      <StatusBar
+        backgroundColor={isDarkMode ? "#121212" : "#FFFFFF"}
         barStyle={isDarkMode ? "light-content" : "dark-content"}
         translucent={true}
       />
-      
       <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkContainer]}>
         <View style={[styles.container, isDarkMode && styles.darkContainer]}>
           {/* Botón de usuario en la esquina superior izquierda */}
+          <View style={styles.leftSideContainer}>
+            <TouchableOpacity
+              style={styles.userIconButton}
+              onPress={() => navigation.navigate("User" as never)}
+            >
+              <Icon name="person-circle-outline" size={55} color={isDarkMode ? "#fff" : "#000"} />
+            </TouchableOpacity>
+            
+            <View style={styles.dateContainer}>
+  <Text style={[styles.dateWeekday, isDarkMode && styles.darkSubText]}>
+    {`Hoy, ${new Date().toLocaleString('es-ES', { weekday: 'long' }).charAt(0).toUpperCase() + new Date().toLocaleString('es-ES', { weekday: 'long' }).slice(1)}`}
+  </Text>                
+  
+  <View style={styles.dateRow}>
+    <Text style={[styles.dateDay, isDarkMode && styles.darkText]}>
+      {new Date().getDate()}
+    </Text>
+    <Text style={[styles.dateMonth, isDarkMode && styles.darkText]}>
+  {new Date().toLocaleString('es-ES', { month: 'long' }).toUpperCase()}
+</Text>
+
+  </View>
+</View>
+
+
+
+          </View>
+
+          {/* Botón de búsqueda en la esquina superior derecha */}
           <TouchableOpacity
-            style={styles.userIconButton}
-            onPress={() => navigation.navigate("User" as never)}
+            style={styles.searchIconButton}
+            onPress={() => navigation.navigate("Search" as never)}
           >
-            <Icon 
-              name="person-circle-outline" 
-              size={40} 
-              color={isDarkMode ? "#fff" : "#000"} 
-            />
+            <Icon name="search-outline" size={35} color={isDarkMode ? "#fff" : "#000"} />
           </TouchableOpacity>
 
-          <View style={styles.header}>
-            <Text style={[styles.title, isDarkMode && styles.darkTitle]}>
-              Panel Principal
-            </Text>
-            <Text style={[styles.subtitle, isDarkMode && styles.darkSubTitle]}>
-              Gestiona tus eventos universitarios
-            </Text>
-          </View>
 
           {/* Componente de estadísticas y botones */}
           <EventStats 
