@@ -22,7 +22,7 @@ const EventoSchema = new mongoose.Schema({
   Edificio: String,
   Campus: String,
   fechaActualizacion: String,
-});
+});  
 
 const Evento = mongoose.model("Evento", EventoSchema, "eventos");
 
