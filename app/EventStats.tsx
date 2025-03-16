@@ -129,21 +129,11 @@ const EventStats: React.FC<EventStatsProps> = ({ selectedEventos, isDarkMode, na
               <View style={styles.eventDetailsColumn}>
                 {/* Event title split into two lines with configurable spacing */}
                 <View style={styles.titleContainer}>
-                  <Text 
-                    style={styles.eventTitleFirstLine}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {event.titleFirstLine}
-                  </Text>
-                  <View style={styles.titleSpacer} />
-                  <Text 
-                    style={styles.eventTitleSecondLine}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {event.titleSecondLine}
-                  </Text>
+                <View style={styles.titleFirstLineContainer}>
+    <Text style={styles.eventTitleFirstLine}>{event.titleFirstLine}</Text>
+  </View>
+  <Text style={styles.eventTitleSecondLine}>{event.titleSecondLine}</Text>
+
                 </View>
                 
                 {/* Room display - color matches card color */}
