@@ -191,17 +191,17 @@ export const styles = StyleSheet.create({
   // Add these styles to your existing styles object in Index.styles.js
 
 // Event list styles
-eventListContainer: {
-  width: '100%',
-  marginVertical: 20,
-},
-eventCard: {
-  width: '100%',
-  borderRadius: 16,
-  padding: 15,
-  marginBottom: 12,
-  flexDirection: 'column',
-},
+// eventListContainer: {
+//   width: '100%',
+//   marginVertical: 20,
+// },
+// eventCard: {
+//   width: '100%',
+//   borderRadius: 16,
+//   padding: 15,
+//   marginBottom: 12,
+//   flexDirection: 'column',
+// },
 eventTimeContainer: {
   flexDirection: 'row',
   justifyContent: 'flex-start',
@@ -230,4 +230,47 @@ eventParticipantText: {
   marginRight: 16,
   opacity: 0.8,
 },
+
+// // Main content container for proper spacing
+// mainContentContainer: {
+//   flex: 1,
+//   width: '100%',
+// },
+
+// eventListContentContainer: {
+//   marginTop: 100,
+
+  
+// },
+
+
+// Modifica estos estilos en el archivo Index.styles.js
+
+// Modifica el estilo del contenedor principal para asegurar que ocupe todo el espacio
+mainContentContainer: {
+  flex: 1,
+  width: '100%',
+},
+
+// Reduce el marginTop para que la lista comience más arriba
+eventListContentContainer: {
+  marginTop: 20, // Reduce de 100 a 20
+  paddingBottom: 20, // Añade padding en la parte inferior
+},
+
+// Asegura que el contenedor de la lista tenga flex:1 para ocupar todo el espacio disponible
+eventListContainer: {
+  flex: 1,
+  width: '100%',
+  marginVertical: 10, // Reduce de 20 a 10
+},
+
+// Asegúrate de que las tarjetas de eventos tengan suficiente margen inferior
+eventCard: {
+  width: '100%',
+  borderRadius: 16,
+  padding: 15,
+  marginBottom: 15, // Aumenta ligeramente el espacio entre tarjetas
+  flexDirection: 'column',
+}
 });

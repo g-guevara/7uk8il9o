@@ -1,8 +1,7 @@
-import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useRef } from "react";
+import { View, Text, TouchableOpacity, Animated, ScrollView } from "react-native";
 import { NavigationProp } from "@react-navigation/native";
 import { styles } from "./styles/Index.styles";
-import Icon from "react-native-vector-icons/Ionicons";
 
 interface EventStatsProps {
   selectedEventos: any[];
@@ -10,7 +9,7 @@ interface EventStatsProps {
   navigation: NavigationProp<any>;
 }
 
-// Sample data - you should replace this with your actual data
+// Sample data - replace with your actual data
 const sampleEvents = [
   {
     id: 1,
@@ -22,6 +21,30 @@ const sampleEvents = [
   },
   {
     id: 2,
+    title: "DESIGN MEETING",
+    startTime: "11:30",
+    endTime: "12:20",
+    participants: ["ALEX", "HELENA", "NANA"],
+    color: "#FFE135" // Yellow
+  },
+  {
+    id: 3,
+    title: "DESIGN MEETING",
+    startTime: "11:30",
+    endTime: "12:20",
+    participants: ["ALEX", "HELENA", "NANA"],
+    color: "#FFE135" // Yellow
+  },
+  {
+    id: 4,
+    title: "DESIGN MEETING",
+    startTime: "11:30",
+    endTime: "12:20",
+    participants: ["ALEX", "HELENA", "NANA"],
+    color: "#FFE135" // Yellow
+  },
+  {
+    id: 5,
     title: "DAILY PROJECT",
     startTime: "12:35",
     endTime: "14:10",
@@ -29,7 +52,7 @@ const sampleEvents = [
     color: "#B768A2" // Purple
   },
   {
-    id: 3,
+    id: 6,
     title: "WEEKLY PLANNING",
     startTime: "15:00",
     endTime: "16:30",
@@ -41,25 +64,24 @@ const sampleEvents = [
 const EventStats: React.FC<EventStatsProps> = ({ selectedEventos, isDarkMode, navigation }) => {
   // You might want to use the selectedEventos data instead of sampleEvents
   // when you have the proper data structure
-  const eventsToDisplay = sampleEvents; 
-
+  const eventsToDisplay = sampleEvents;
+  
+  // Keep track of scroll position
+  const scrollY = useRef(new Animated.Value(0)).current;
+  
   return (
-    <>
-      <View style={styles.statsContainer}>
-        <View style={[styles.statCard, isDarkMode && styles.darkStatCard]}>
-          <Text style={[styles.statValue, isDarkMode && styles.darkText]}>
-            {selectedEventos.length}
-          </Text>
-          <Text style={[styles.statLabel, isDarkMode && styles.darkSubText]}>
-            Eventos seleccionados
-          </Text>
-        </View>
-      </View>
-
-      {/* Event List */}
-      <ScrollView style={styles.eventListContainer}>
+    <View style={styles.mainContentContainer}>
+      {/* Add spacing at the top to prevent overlap with the date header */}
+      <View style={{ height: 110 }} />
+      
+      {/* Event List with ScrollView */}
+      <ScrollView
+        style={styles.eventListContainer}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.eventListContentContainer}
+      >
         {eventsToDisplay.map((event) => (
-          <TouchableOpacity 
+          <TouchableOpacity
             key={event.id}
             style={[
               styles.eventCard,
@@ -92,23 +114,7 @@ const EventStats: React.FC<EventStatsProps> = ({ selectedEventos, isDarkMode, na
           </TouchableOpacity>
         ))}
       </ScrollView>
-
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={[styles.mainButton, isDarkMode && styles.darkMainButton]}
-          onPress={() => navigation.navigate("Search" as never)}
-        >
-          <Text style={styles.mainButtonText}>Buscar Eventos</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.mainButton, isDarkMode && styles.darkMainButton]}
-          onPress={() => navigation.navigate("User" as never)}
-        >
-          <Text style={styles.mainButtonText}>Explorar Todos</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+    </View>
   );
 };
 
