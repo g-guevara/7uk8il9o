@@ -121,16 +121,21 @@ export const styles = StyleSheet.create({
   eventTitleFirstLine: {
     fontSize: 50,          // Tamaño del texto
     fontWeight: '400',
+    transform: [{ scaleY: 0.95 }], // Ajusta la altura ligeramente
+
     color: '#000000',
     letterSpacing: 0,      // Espaciado entre letras
     marginBottom: 0,       // ESTO CONTROLA EL ESPACIO ENTRE LAS DOS LÍNEAS
                            // Valor pequeño (1-3) = líneas más juntas como en la imagen 2
                            // Valor grande (8-15) = líneas más separadas como en la imagen 1
   },
-  
+  titleFirstLineContainer: {
+    marginBottom: -20, // Este margin debería funcionar en un View
+  },
   // Estilo para la segunda línea del título (por ejemplo, "MEETING")
   eventTitleSecondLine: {
     fontSize: 50,          // Tamaño del texto
+    transform: [{ scaleY: 0.95 }],
     fontWeight: '400',
     color: '#000000',
     letterSpacing: 0,      // Espaciado entre letras

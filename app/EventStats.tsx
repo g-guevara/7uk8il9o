@@ -22,39 +22,7 @@ const sampleEvents = [
     participants: ["ALEX", "HELENA", "NANA"],
     color: "#FFE135" // Yellow
   },
-  {
-    id: 2,
-    titleFirstLine: "DESIGN",
-    titleSecondLine: "MEETING",
-    startTime: "11",
-    endTime: "12",
-    startMinutes: "30",
-    endMinutes: "20",
-    participants: ["ALEX", "HELENA", "NANA"],
-    color: "#FFE135" // Yellow
-  },
-  {
-    id: 3,
-    titleFirstLine: "DESIGN",
-    titleSecondLine: "MEETING",
-    startTime: "11",
-    endTime: "12",
-    startMinutes: "30",
-    endMinutes: "20",
-    participants: ["ALEX", "HELENA", "NANA"],
-    color: "#FFE135" // Yellow
-  },
-  {
-    id: 4,
-    titleFirstLine: "DESIGN",
-    titleSecondLine: "MEETING",
-    startTime: "11",
-    endTime: "12",
-    startMinutes: "30",
-    endMinutes: "20",
-    participants: ["ALEX", "HELENA", "NANA"],
-    color: "#FFE135" // Yellow
-  },
+
   {
     id: 5,
     titleFirstLine: "DAILY",
@@ -69,7 +37,7 @@ const sampleEvents = [
   {
     id: 6,
     titleFirstLine: "WEEKLY",
-    titleSecondLine: "PLANNING",
+    titleSecondLine: "Plan",
     startTime: "15",
     endTime: "16",
     startMinutes: "00",
@@ -129,10 +97,11 @@ const EventStats: React.FC<EventStatsProps> = ({ selectedEventos, isDarkMode, na
               <View style={styles.eventDetailsColumn}>
                 {/* Event title split into two lines with configurable spacing */}
                 <View style={styles.titleContainer}>
-                  <Text style={styles.eventTitleFirstLine}>{event.titleFirstLine}</Text>
-                  <View style={styles.titleSpacer} />
-                  <Text style={styles.eventTitleSecondLine}>{event.titleSecondLine}</Text>
-                </View>
+  <View style={styles.titleFirstLineContainer}>
+    <Text style={styles.eventTitleFirstLine}>{event.titleFirstLine}</Text>
+  </View>
+  <Text style={styles.eventTitleSecondLine}>{event.titleSecondLine}</Text>
+</View>
                 
                 {/* Participants */}
                 {event.participants.length > 0 && (
