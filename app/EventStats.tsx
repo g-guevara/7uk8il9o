@@ -19,10 +19,42 @@ const sampleEvents = [
     endTime: "12",
     startMinutes: "30",
     endMinutes: "20",
-    participants: ["ALEX", "HELENA", "NANA"],
+    room: "201-B",
     color: "#FFE135" // Yellow
   },
-
+  {
+    id: 2,
+    titleFirstLine: "DESIGN",
+    titleSecondLine: "MEETING",
+    startTime: "11",
+    endTime: "12",
+    startMinutes: "30",
+    endMinutes: "20",
+    room: "305-A",
+    color: "#FFE135" // Yellow
+  },
+  {
+    id: 3,
+    titleFirstLine: "DESIGN",
+    titleSecondLine: "MEETING",
+    startTime: "11",
+    endTime: "12",
+    startMinutes: "30",
+    endMinutes: "20",
+    room: "CONFERENCE HALL",
+    color: "#FFE135" // Yellow
+  },
+  {
+    id: 4,
+    titleFirstLine: "PRODUCT DESIGN",
+    titleSecondLine: "MEETING",
+    startTime: "11",
+    endTime: "12",
+    startMinutes: "30",
+    endMinutes: "20",
+    room: "108",
+    color: "#FFE135" // Yellow
+  },
   {
     id: 5,
     titleFirstLine: "DAILY",
@@ -31,18 +63,18 @@ const sampleEvents = [
     endTime: "14",
     startMinutes: "35",
     endMinutes: "10",
-    participants: ["ME", "RICHARD", "ORY", "+4"],
+    room: "ZOOM MEETING",
     color: "#B768A2" // Purple
   },
   {
     id: 6,
     titleFirstLine: "WEEKLY",
-    titleSecondLine: "Plan",
+    titleSecondLine: "PLANNING",
     startTime: "15",
     endTime: "16",
     startMinutes: "00",
     endMinutes: "30",
-    participants: [],
+    room: "MAIN HALL",
     color: "#9ACD32" // Green
   }
 ];
@@ -97,22 +129,31 @@ const EventStats: React.FC<EventStatsProps> = ({ selectedEventos, isDarkMode, na
               <View style={styles.eventDetailsColumn}>
                 {/* Event title split into two lines with configurable spacing */}
                 <View style={styles.titleContainer}>
-  <View style={styles.titleFirstLineContainer}>
-    <Text style={styles.eventTitleFirstLine}>{event.titleFirstLine}</Text>
-  </View>
-  <Text style={styles.eventTitleSecondLine}>{event.titleSecondLine}</Text>
-</View>
+                  <Text 
+                    style={styles.eventTitleFirstLine}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {event.titleFirstLine}
+                  </Text>
+                  <View style={styles.titleSpacer} />
+                  <Text 
+                    style={styles.eventTitleSecondLine}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    {event.titleSecondLine}
+                  </Text>
+                </View>
                 
-                {/* Participants */}
-                {event.participants.length > 0 && (
-                  <View style={styles.eventParticipantsContainer}>
-                    {event.participants.map((participant, index) => (
-                      <Text key={index} style={styles.eventParticipantText}>
-                        {participant}
-                      </Text>
-                    ))}
+                {/* Room display - color matches card color */}
+                <View style={styles.roomContainerSimple}>
+                  <View style={styles.roomBadge}>
+                    <Text style={[styles.roomText, { color: event.color }]}>
+                      {event.room}
+                    </Text>
                   </View>
-                )}
+                </View>
               </View>
             </View>
           </TouchableOpacity>

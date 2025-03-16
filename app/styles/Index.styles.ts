@@ -199,7 +199,40 @@ timeMinutes: {
   color: '#000000',
   marginBottom: 4,
 },
+// Estilos actualizados para la sala con color coincidente
 
+// Contenedor simple para la sala sin etiqueta
+roomContainerSimple: {
+  marginTop: 8,
+},
+
+// Badge/Pill para el número de sala
+roomBadge: {
+  backgroundColor: '#000000',
+  borderRadius: 30,
+  paddingHorizontal: 15,
+  paddingVertical: 5,
+  alignSelf: 'flex-start', // Hace que el badge tenga el ancho de su contenido
+},
+
+// Texto del número de sala - ahora sin color fijo
+// El color se aplica dinámicamente en el componente para que coincida con el de la tarjeta
+roomText: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  // El color se establece dinámicamente: color: event.color
+},
+
+// OPCIONAL: Variantes de estilo para el badge de la sala
+
+// Opción 1: Badge más grande
+roomBadgeLarge: {
+  backgroundColor: '#000000',
+  borderRadius: 40,
+  paddingHorizontal: 18,
+  paddingVertical: 8,
+  alignSelf: 'flex-start',
+},
 // Línea divisoria vertical entre los tiempos de inicio y fin
 timeVerticalDivider: {
   height: 19,
@@ -209,12 +242,52 @@ timeVerticalDivider: {
   marginVertical: 8,
 },
 
+// Contenedor para el área de la sala
+roomContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: 8,
+},
+
+// Etiqueta "Sala"
+roomLabel: {
+  fontSize: 12,
+  color: '#000000',
+  opacity: 0.7,
+  marginRight: 10,
+},
+
+
+// Opción 2: Insignia con esquinas menos redondeadas
+roomBadgeSquared: {
+  backgroundColor: '#000000',
+  borderRadius: 10,
+  paddingHorizontal: 15,
+  paddingVertical: 5,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
+// Opción 3: Insignia con borde
+roomBadgeWithBorder: {
+  backgroundColor: '#000000',
+  borderRadius: 30,
+  paddingHorizontal: 15,
+  paddingVertical: 5,
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderWidth: 1,
+  borderColor: '#FFFFFF',
+},
+
 // Columna derecha con detalles del evento
 eventDetailsColumn: {
   flex: 1,
   paddingLeft: 15,
   justifyContent: 'center',
 },
+
+
 titleSpacer: {
   height: 0, // Ajusta este valor para controlar el espacio
 },
