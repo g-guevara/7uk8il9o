@@ -1,15 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, SafeAreaView, StatusBar } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { StackNavigationProp } from '@react-navigation/stack';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/Ionicons";
 import { styles } from "./styles/Index.styles";
 import EventStats from "./EventStats";
 
+// Define the navigation parameter list type
+type RootStackParamList = {
+  Main: undefined;
+  Search: undefined;
+  Config: undefined;
+  // Add other screens in your navigation stack as needed
+};
+
+// Define the navigation prop type
+type MainScreenNavigationProp = StackNavigationProp<RootStackParamList>;
+
 const Main = () => {
   const [selectedEventos, setSelectedEventos] = useState<any[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
-  const navigation = useNavigation();
+  const navigation = useNavigation<MainScreenNavigationProp>();
 
   // Load data when component mounts
   useEffect(() => {
@@ -71,7 +83,7 @@ const Main = () => {
           <View style={styles.leftSideContainer}>
             <TouchableOpacity
               style={styles.userIconButton}
-              onPress={() => navigation.navigate("Search" as never)}
+              onPress={() => navigation.navigate("Search")}
             >
               <Icon name="search-outline" size={35} color={isDarkMode ? "#fff" : "#000"} />
             </TouchableOpacity>
@@ -95,7 +107,7 @@ const Main = () => {
           {/* Botón de usuario en la esquina superior derecha (cambiado) */}
           <TouchableOpacity
             style={styles.searchIconButton}
-            onPress={() => navigation.navigate("Config" as never)}
+            onPress={() => navigation.navigate("Config")}
           >
             <Icon name="person" size={35} color={isDarkMode ? "#fff" : "#000"} />
           </TouchableOpacity>

@@ -13,19 +13,19 @@ interface EventStatsProps {
 const sampleEvents = [
   {
     id: 1,
-    titleFirstLine: "DESIGN",
-    titleSecondLine: "MEETING",
+    titleFirstLine: "PROCESO",
+    titleSecondLine: "IND.",
     startTime: "11",
     endTime: "12",
     startMinutes: "30",
     endMinutes: "20",
     room: "201-B",
-    color: "#FFE135" // Yellow
+    color: "#2becc6" // Yellow
   },
   {
     id: 2,
     titleFirstLine: "DESIGN",
-    titleSecondLine: "MEETING",
+    titleSecondLine: "LAB",
     startTime: "11",
     endTime: "12",
     startMinutes: "30",
@@ -35,14 +35,14 @@ const sampleEvents = [
   },
   {
     id: 3,
-    titleFirstLine: "DESIGN",
+    titleFirstLine: "ANNUAL",
     titleSecondLine: "MEETING",
     startTime: "11",
     endTime: "12",
     startMinutes: "30",
     endMinutes: "20",
     room: "CONFERENCE HALL",
-    color: "#FFE135" // Yellow
+    color: "#2bb5ec" // Yellow
   },
   {
     id: 4,
