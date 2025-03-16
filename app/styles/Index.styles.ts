@@ -113,6 +113,153 @@ export const styles = StyleSheet.create({
   userIconButton: {
     padding: 5,
   },
+  titleContainer: {
+    marginBottom: 12,
+  },
+  
+  // Estilo para la primera línea del título (por ejemplo, "DESIGN")
+  eventTitleFirstLine: {
+    fontSize: 50,          // Tamaño del texto
+    fontWeight: '400',
+    color: '#000000',
+    letterSpacing: 0,      // Espaciado entre letras
+    marginBottom: 0,       // ESTO CONTROLA EL ESPACIO ENTRE LAS DOS LÍNEAS
+                           // Valor pequeño (1-3) = líneas más juntas como en la imagen 2
+                           // Valor grande (8-15) = líneas más separadas como en la imagen 1
+  },
+  
+  // Estilo para la segunda línea del título (por ejemplo, "MEETING")
+  eventTitleSecondLine: {
+    fontSize: 50,          // Tamaño del texto
+    fontWeight: '400',
+    color: '#000000',
+    letterSpacing: 0,      // Espaciado entre letras
+  },
+  // Nuevos estilos para agregar a tu StyleSheet.create({})
+// Agrega estos estilos al final de tu objeto de estilos existente
+
+// Contenedor principal para mantener el espacio adecuado
+mainContentContainer: {
+  flex: 1,
+  width: '100%',
+},
+
+// Reducir el margen superior para que la lista comience más arriba
+eventListContentContainer: {
+  marginTop: 15,
+  paddingBottom: 20,
+},
+
+// Asegurar que el contenedor de la lista tenga flex:1 para ocupar todo el espacio disponible
+eventListContainer: {
+  flex: 1,
+  width: '100%',
+  marginVertical: 10,
+},
+
+// Tarjeta de evento con el nuevo diseño
+eventCard: {
+  width: '100%',
+  borderRadius: 33,
+  padding: 15,
+  marginBottom: 8,
+},
+
+// Contenido de la tarjeta con disposición en fila
+eventCardContent: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+// Columna izquierda con la información de tiempo
+eventTimeColumn: {
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: 1,
+  width: 40,
+},
+
+// Estilo para los números de hora
+timeNumber: {
+  fontSize: 19,
+  fontWeight: 'bold',
+  color: '#000000',
+  lineHeight: 32,
+},
+
+// Estilo para los minutos
+timeMinutes: {
+  fontSize: 15,
+
+  color: '#000000',
+  marginBottom: 4,
+},
+
+// Línea divisoria vertical entre los tiempos de inicio y fin
+timeVerticalDivider: {
+  height: 19,
+  width: 1,
+  backgroundColor: '#000000',
+  opacity: 0.5,
+  marginVertical: 8,
+},
+
+// Columna derecha con detalles del evento
+eventDetailsColumn: {
+  flex: 1,
+  paddingLeft: 15,
+  justifyContent: 'center',
+},
+titleSpacer: {
+  height: 0, // Ajusta este valor para controlar el espacio
+},
+
+// Estilo del título del evento
+eventTitleText: {
+  fontSize: 50,
+
+  fontWeight: '400',
+  color: '#000000',
+
+  letterSpacing: 1,
+},
+
+// Estilo del contenedor de participantes
+eventParticipantsContainer: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+},
+
+// Estilo para cada nombre de participante
+eventParticipantText: {
+  fontSize: 12,
+  color: '#000000',
+  marginRight: 16,
+  marginBottom: 4,
+  opacity: 0.8,
+  letterSpacing: 0.5,
+},
+
+  // Add these new styles to your existing styles.js file
+
+// New styles to add to your StyleSheet.create({})
+// Just append these to your existing styles object
+
+
+// Divider line between start and end times
+timeDivider: {
+  height: 1,
+  width: 20,
+  backgroundColor: '#000000',
+  opacity: 0.5,
+  marginVertical: 8,
+},
+
+
+
+// Event title styling
+
+
   // dateContainer: {j
   //   marginTop: 10,
   //   alignItems: "center",
@@ -213,23 +360,7 @@ eventTimeText: {
   color: '#000000',
   marginRight: 10,
 },
-eventTitleText: {
-  fontSize: 24,
-  fontWeight: 'bold',
-  color: '#000000',
-  marginVertical: 4,
-},
-eventParticipantsContainer: {
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  marginTop: 8,
-},
-eventParticipantText: {
-  fontSize: 12,
-  color: '#000000',
-  marginRight: 16,
-  opacity: 0.8,
-},
+
 
 // // Main content container for proper spacing
 // mainContentContainer: {
@@ -246,31 +377,22 @@ eventParticipantText: {
 
 // Modifica estos estilos en el archivo Index.styles.js
 
-// Modifica el estilo del contenedor principal para asegurar que ocupe todo el espacio
-mainContentContainer: {
-  flex: 1,
-  width: '100%',
+
+// Add these new styles to your existing styles.js file
+
+// New styles to add to your StyleSheet.create({})
+// Just append these to your existing styles object
+
+// Time styling for matching the image design
+timeRow: {
+  flexDirection: 'row',
+  marginBottom: 10,
+},
+timeBlock: {
+  flexDirection: 'row',
+  alignItems: 'flex-end',
+  marginRight: 10,
 },
 
-// Reduce el marginTop para que la lista comience más arriba
-eventListContentContainer: {
-  marginTop: 20, // Reduce de 100 a 20
-  paddingBottom: 20, // Añade padding en la parte inferior
-},
 
-// Asegura que el contenedor de la lista tenga flex:1 para ocupar todo el espacio disponible
-eventListContainer: {
-  flex: 1,
-  width: '100%',
-  marginVertical: 10, // Reduce de 20 a 10
-},
-
-// Asegúrate de que las tarjetas de eventos tengan suficiente margen inferior
-eventCard: {
-  width: '100%',
-  borderRadius: 16,
-  padding: 15,
-  marginBottom: 15, // Aumenta ligeramente el espacio entre tarjetas
-  flexDirection: 'column',
-}
 });

@@ -13,49 +13,67 @@ interface EventStatsProps {
 const sampleEvents = [
   {
     id: 1,
-    title: "DESIGN MEETING",
-    startTime: "11:30",
-    endTime: "12:20",
+    titleFirstLine: "DESIGN",
+    titleSecondLine: "MEETING",
+    startTime: "11",
+    endTime: "12",
+    startMinutes: "30",
+    endMinutes: "20",
     participants: ["ALEX", "HELENA", "NANA"],
     color: "#FFE135" // Yellow
   },
   {
     id: 2,
-    title: "DESIGN MEETING",
-    startTime: "11:30",
-    endTime: "12:20",
+    titleFirstLine: "DESIGN",
+    titleSecondLine: "MEETING",
+    startTime: "11",
+    endTime: "12",
+    startMinutes: "30",
+    endMinutes: "20",
     participants: ["ALEX", "HELENA", "NANA"],
     color: "#FFE135" // Yellow
   },
   {
     id: 3,
-    title: "DESIGN MEETING",
-    startTime: "11:30",
-    endTime: "12:20",
+    titleFirstLine: "DESIGN",
+    titleSecondLine: "MEETING",
+    startTime: "11",
+    endTime: "12",
+    startMinutes: "30",
+    endMinutes: "20",
     participants: ["ALEX", "HELENA", "NANA"],
     color: "#FFE135" // Yellow
   },
   {
     id: 4,
-    title: "DESIGN MEETING",
-    startTime: "11:30",
-    endTime: "12:20",
+    titleFirstLine: "DESIGN",
+    titleSecondLine: "MEETING",
+    startTime: "11",
+    endTime: "12",
+    startMinutes: "30",
+    endMinutes: "20",
     participants: ["ALEX", "HELENA", "NANA"],
     color: "#FFE135" // Yellow
   },
   {
     id: 5,
-    title: "DAILY PROJECT",
-    startTime: "12:35",
-    endTime: "14:10",
+    titleFirstLine: "DAILY",
+    titleSecondLine: "PROJECT",
+    startTime: "12",
+    endTime: "14",
+    startMinutes: "35",
+    endMinutes: "10",
     participants: ["ME", "RICHARD", "ORY", "+4"],
     color: "#B768A2" // Purple
   },
   {
     id: 6,
-    title: "WEEKLY PLANNING",
-    startTime: "15:00",
-    endTime: "16:30",
+    titleFirstLine: "WEEKLY",
+    titleSecondLine: "PLANNING",
+    startTime: "15",
+    endTime: "16",
+    startMinutes: "00",
+    endMinutes: "30",
     participants: [],
     color: "#9ACD32" // Green
   }
@@ -89,28 +107,45 @@ const EventStats: React.FC<EventStatsProps> = ({ selectedEventos, isDarkMode, na
             ]}
             onPress={() => {
               // You can add navigation to event details or other actions here
-              console.log(`Pressed on event: ${event.title}`);
+              console.log(`Pressed on event: ${event.titleFirstLine} ${event.titleSecondLine}`);
             }}
           >
-            {/* Time information */}
-            <View style={styles.eventTimeContainer}>
-              <Text style={styles.eventTimeText}>{event.startTime}</Text>
-              <Text style={styles.eventTimeText}>{event.endTime}</Text>
-            </View>
-            
-            {/* Event title */}
-            <Text style={styles.eventTitleText}>{event.title}</Text>
-            
-            {/* Participants */}
-            {event.participants.length > 0 && (
-              <View style={styles.eventParticipantsContainer}>
-                {event.participants.map((participant, index) => (
-                  <Text key={index} style={styles.eventParticipantText}>
-                    {participant}
-                  </Text>
-                ))}
+            <View style={styles.eventCardContent}>
+              {/* Left side with times */}
+              <View style={styles.eventTimeColumn}>
+                {/* Start time */}
+                <Text style={styles.timeNumber}>{event.startTime}</Text>
+                <Text style={styles.timeMinutes}>{event.startMinutes}</Text>
+                
+                {/* Vertical Divider line */}
+                <View style={styles.timeVerticalDivider} />
+                
+                {/* End time */}
+                <Text style={styles.timeNumber}>{event.endTime}</Text>
+                <Text style={styles.timeMinutes}>{event.endMinutes}</Text>
               </View>
-            )}
+              
+              {/* Right side with event details */}
+              <View style={styles.eventDetailsColumn}>
+                {/* Event title split into two lines with configurable spacing */}
+                <View style={styles.titleContainer}>
+                  <Text style={styles.eventTitleFirstLine}>{event.titleFirstLine}</Text>
+                  <View style={styles.titleSpacer} />
+                  <Text style={styles.eventTitleSecondLine}>{event.titleSecondLine}</Text>
+                </View>
+                
+                {/* Participants */}
+                {event.participants.length > 0 && (
+                  <View style={styles.eventParticipantsContainer}>
+                    {event.participants.map((participant, index) => (
+                      <Text key={index} style={styles.eventParticipantText}>
+                        {participant}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
