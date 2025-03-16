@@ -103,7 +103,7 @@ const Config = () => {
           </Text>
           <TouchableOpacity
             style={styles.searchMoreButton}
-            onPress={() => navigation.navigate("Search" as never)}
+            onPress={() => navigation.navigate("User" as never)}
           >
             <Text style={styles.searchMoreButtonText}>Buscar más</Text>
           </TouchableOpacity>

@@ -187,4 +187,47 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: "#7f8c8d",
   },
+
+  // Add these styles to your existing styles object in Index.styles.js
+
+// Event list styles
+eventListContainer: {
+  width: '100%',
+  marginVertical: 20,
+},
+eventCard: {
+  width: '100%',
+  borderRadius: 16,
+  padding: 15,
+  marginBottom: 12,
+  flexDirection: 'column',
+},
+eventTimeContainer: {
+  flexDirection: 'row',
+  justifyContent: 'flex-start',
+  marginBottom: 4,
+},
+eventTimeText: {
+  fontSize: 14,
+  fontWeight: 'bold',
+  color: '#000000',
+  marginRight: 10,
+},
+eventTitleText: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  color: '#000000',
+  marginVertical: 4,
+},
+eventParticipantsContainer: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  marginTop: 8,
+},
+eventParticipantText: {
+  fontSize: 12,
+  color: '#000000',
+  marginRight: 16,
+  opacity: 0.8,
+},
 });
