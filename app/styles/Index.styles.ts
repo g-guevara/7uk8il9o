@@ -122,6 +122,7 @@ export const styles = StyleSheet.create({
     fontSize: 50,          // Tamaño del texto
     fontWeight: '400',
     transform: [{ scaleY: 0.95 }], // Ajusta la altura ligeramente
+    
 
     color: '#000000',
     letterSpacing: 0,      // Espaciado entre letras
@@ -471,6 +472,34 @@ timeBlock: {
   alignItems: 'flex-end',
   marginRight: 10,
 },
+// Add these styles to your existing styles in Index.styles.ts
+
+// Styles for when no events are selected
+noEventsContainer: {
+  flex: 1,
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  marginTop: 50,
+},
+noEventsText: {
+  fontSize: 16,
+  color: '#2c3e50',
+  textAlign: 'center',
+  marginBottom: 20,
+},
+addEventsButton: {
+  backgroundColor: '#000',
+  paddingVertical: 12,
+  paddingHorizontal: 24,
+  borderRadius: 50,
+},
+addEventsButtonText: {
+  color: '#fff',
+  fontWeight: 'bold',
+  fontSize: 14,
+},
+
 
 
 });

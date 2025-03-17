@@ -3,7 +3,8 @@ import { View, Text, Switch, TouchableOpacity, FlatList, Alert } from "react-nat
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "./ThemeContext";
-import { styles } from './styles/Config.styles'
+import { styles } from './styles/Config.styles';
+import DataSyncInfo from "./DataSyncInfo";
 
 // Definir el tipo de datos que vienen de la API
 interface Evento {
@@ -96,6 +97,7 @@ const Config = () => {
         </View>
       </View>
       
+
       <View style={styles.eventsSection}>
         <View style={styles.eventsSectionHeader}>
           <Text style={[styles.sectionTitle, isDarkMode && styles.darkText]}>

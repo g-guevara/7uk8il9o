@@ -19,20 +19,19 @@ type RootStackParamList = {
 type MainScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
 const Main = () => {
-  const [selectedEventos, setSelectedEventos] = useState<any[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(true); // Default to dark mode
   const navigation = useNavigation<MainScreenNavigationProp>();
 
   // Load data when component mounts
   useEffect(() => {
-    loadData();
+    loadThemePreference();
     setDefaultDarkMode();
   }, []);
 
   // Also refresh data when screen comes into focus (for theme changes from other screens)
   useFocusEffect(
     React.useCallback(() => {
-      loadData();
+      loadThemePreference();
       return () => {};
     }, [])
   );
@@ -51,21 +50,15 @@ const Main = () => {
     }
   };
 
-  const loadData = async () => {
+  const loadThemePreference = async () => {
     try {
       // Load theme preference
       const themeValue = await AsyncStorage.getItem("isDarkMode");
       if (themeValue !== null) {
         setIsDarkMode(themeValue === "true");
       }
-
-      // Load selected events
-      const jsonValue = await AsyncStorage.getItem("selectedEventos");
-      if (jsonValue !== null) {
-        setSelectedEventos(JSON.parse(jsonValue));
-      }
     } catch (error) {
-      console.error("Error loading data:", error);
+      console.error("Error loading theme preference:", error);
     }
   };
 
@@ -79,7 +72,7 @@ const Main = () => {
       />
       <SafeAreaView style={[styles.safeArea, isDarkMode && styles.darkContainer]}>
         <View style={[styles.container, isDarkMode && styles.darkContainer]}>
-          {/* Botón de búsqueda en la esquina superior izquierda (cambiado) */}
+          {/* Botón de búsqueda en la esquina superior izquierda */}
           <View style={styles.leftSideContainer}>
             <TouchableOpacity
               style={styles.userIconButton}
@@ -104,7 +97,7 @@ const Main = () => {
             </View>
           </View>
 
-          {/* Botón de usuario en la esquina superior derecha (cambiado) */}
+          {/* Botón de usuario en la esquina superior derecha */}
           <TouchableOpacity
             style={styles.searchIconButton}
             onPress={() => navigation.navigate("Config")}
@@ -114,7 +107,6 @@ const Main = () => {
 
           {/* Componente de estadísticas y botones */}
           <EventStats 
-            selectedEventos={selectedEventos} 
             isDarkMode={isDarkMode} 
             navigation={navigation} 
           />
