@@ -4,10 +4,10 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#00000",
   },
   darkContainer: {
-    backgroundColor: "#000000",
+    backgroundColor: "#1a1a1a",
   },
   title: {
     fontSize: 28,
@@ -28,22 +28,27 @@ export const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     marginBottom: 24,
+    borderRadius: 50,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#000000",
+ 
+  },
+  darkSearchContainer: {
+    borderColor: "#FFFfFF",
+    borderWidth: 2,
   },
   searchInput: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    marginRight: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    fontSize: 18,
+    color: "#2c3e50",
   },
   darkSearchInput: {
-    backgroundColor: "#2c3e50",
-    borderColor: "#34495e",
-    color: "#ecf0f1",
+    backgroundColor: "#1a1a1a",
+    color: "#FFFFFF",
   },
   searchButton: {
     backgroundColor: "#3498db",
@@ -79,21 +84,18 @@ export const styles = StyleSheet.create({
   
   // Nuevos estilos para el diseño de tarjeta
   cardEventItem: {
-    backgroundColor: "#fff",
+    backgroundColor: "#F2F2F7",
     marginBottom: 10,
     borderRadius: 24, // Más redondeado como en la imagen
     padding: 10,
     borderWidth: 1,
-    borderColor: "#ddd",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderColor: "#F2F2F7",
+
+   
   },
   darkCardEventItem: {
-    backgroundColor: "#000000",
-    borderColor: "#FFFFFF",
+    backgroundColor: "#2C2C2E",
+    borderColor: "#2C2C2E",
     borderWidth: 2,
   },
   eventHeader: {
@@ -147,10 +149,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#ddd",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+
     elevation: 1,
   },
   darkEventItem: {
