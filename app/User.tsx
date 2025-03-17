@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from './styles/User.styles'
@@ -23,33 +23,38 @@ const User = () => {
   const [filteredEventos, setFilteredEventos] = useState<Evento[]>([]);
   const [searchText, setSearchText] = useState("");
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
-  // Cargar eventos desde la API
+  // Cargar eventos desde la API, eventos seleccionados y preferencia de tema
   useEffect(() => {
+    fetchEventos();
+    loadSelectedEventos();
+    loadThemePreference();
+  }, []);
+
+  // Función para cargar eventos desde la API
+  const fetchEventos = () => {
+    setIsLoading(true);
     fetch("https://7uk8il9o.vercel.app/eventos")
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data: Evento[]) => {
         setEventos(data);
         setFilteredEventos(data);
+        setIsLoading(false);
       })
-      .catch(error => console.error("Error al obtener eventos:", error));
-      
-    // Cargar eventos seleccionados desde AsyncStorage
-    loadSelectedEventos();
-  }, []);
-
-  // Filtrar eventos en tiempo real mientras el usuario escribe
-  useEffect(() => {
-    if (searchText === "") {
-      setFilteredEventos(eventos);
-    } else {
-      const filtered = eventos.filter(evento => 
-        evento.Evento.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredEventos(filtered);
-    }
-  }, [searchText, eventos]);
+      .catch(error => {
+        console.error("Error al obtener eventos:", error);
+        Alert.alert("Error", "No se pudieron cargar los eventos. Intente nuevamente.");
+        setIsLoading(false);
+      });
+  };
 
   // Cargar eventos seleccionados desde AsyncStorage
   const loadSelectedEventos = async () => {
@@ -60,6 +65,19 @@ const User = () => {
       }
     } catch (error) {
       console.error("Error al cargar eventos seleccionados:", error);
+      Alert.alert("Error", "No se pudieron cargar tus eventos seleccionados.");
+    }
+  };
+  
+  // Cargar preferencia de tema desde AsyncStorage
+  const loadThemePreference = async () => {
+    try {
+      const value = await AsyncStorage.getItem("isDarkMode");
+      if (value !== null) {
+        setIsDarkMode(value === "true");
+      }
+    } catch (error) {
+      console.error("Error al cargar preferencia de tema:", error);
     }
   };
 
@@ -70,8 +88,28 @@ const User = () => {
       await AsyncStorage.setItem("selectedEventos", jsonValue);
     } catch (error) {
       console.error("Error al guardar eventos seleccionados:", error);
+      Alert.alert("Error", "No se pudieron guardar tus selecciones.");
     }
   };
+
+  // Filtrar eventos en tiempo real
+  useEffect(() => {
+    if (searchText === "") {
+      setFilteredEventos(eventos);
+    } else {
+      const searchTerm = searchText.toLowerCase();
+      const results = eventos.filter(evento => 
+        evento.Evento.toLowerCase().includes(searchTerm) ||
+        evento.Tipo.toLowerCase().includes(searchTerm) ||
+        evento.Fecha.toLowerCase().includes(searchTerm) ||
+        evento.Sala.toLowerCase().includes(searchTerm) ||
+        evento.Edificio.toLowerCase().includes(searchTerm) ||
+        evento.Campus.toLowerCase().includes(searchTerm)
+      );
+      
+      setFilteredEventos(results);
+    }
+  }, [searchText, eventos]);
 
   // Seleccionar o deseleccionar un evento
   const toggleEventoSelection = (evento: Evento) => {
@@ -100,57 +138,94 @@ const User = () => {
   };
 
   return (
-    <View style={styles.container}>
-
-      <View style={styles.searchContainer}>
+    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
+      <View style={[styles.searchContainer, isDarkMode && styles.darkSearchContainer]}>
         <TextInput
-          style={styles.searchInput}
+          style={[styles.searchInput, isDarkMode && styles.darkSearchInput]}
           placeholder="Buscar ramos 2025 - I"
+          placeholderTextColor={isDarkMode ? "#FFFFFF" : "#7f8c8d"}
           value={searchText}
           onChangeText={setSearchText}
         />
       </View>
       
-      <FlatList
-        data={filteredEventos}
-        keyExtractor={(item) => item._id}
-        style={styles.eventList}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={[
-              styles.eventItem,
-              isEventoSelected(item) && styles.selectedEventItem
-            ]}
-            onPress={() => toggleEventoSelection(item)}
-          >
-            <View style={styles.eventContent}>
-              <Text style={styles.eventTitle}>{item.Evento}</Text>
-              <Text style={styles.eventDetails}>
-                {item.Fecha} • {item.Inicio} - {item.Fin}
+      {isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={isDarkMode ? "#FFFFFF" : "#000000"} />
+        </View>
+      ) : searchText.trim() !== "" && filteredEventos.length === 0 ? (
+        <View style={styles.noResultsContainer}>
+          <Text style={[styles.noResultsText, isDarkMode && styles.darkText]}>
+            No se encontraron resultados para "{searchText}".
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={filteredEventos}
+          keyExtractor={(item) => item._id}
+          style={styles.eventList}
+          ListEmptyComponent={
+            !isLoading && filteredEventos.length === 0 ? (
+              <View style={styles.noResultsContainer}>
+                <Text style={[styles.instructionText, isDarkMode && styles.darkText]}>
+                  No se encontraron eventos disponibles.
+                </Text>
+              </View>
+            ) : null
+          }
+          ListHeaderComponent={
+            filteredEventos.length > 0 ? (
+              <Text style={[styles.resultsCount, isDarkMode && styles.darkText]}>
+                {filteredEventos.length} resultado{filteredEventos.length !== 1 ? "s" : ""} encontrado{filteredEventos.length !== 1 ? "s" : ""}
               </Text>
-              <Text style={styles.eventLocation}>
-                {item.Sala}, {item.Edificio}, {item.Campus}
-              </Text>
-            </View>
-            
-            <View style={styles.selectionIndicator}>
+            ) : null
+          }
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={[
+                styles.eventItem,
+                isDarkMode && styles.darkEventItem,
+                isEventoSelected(item) && (isDarkMode ? styles.darkSelectedEventItem : styles.selectedEventItem)
+              ]}
+              onPress={() => toggleEventoSelection(item)}
+            >
+              <View style={styles.eventContent}>
+                <View style={styles.eventHeader}>
+                  <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
+                    {item.Evento}
+                  </Text>
+                </View>
+                
+                <Text style={[styles.eventDetails, isDarkMode && styles.darkEventDetails]}>
+                  {item.Tipo} en {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
+                </Text>
+                
+                <Text style={[styles.eventLocation, isDarkMode && styles.darkSubText]}>
+                  {item.Sala}, {item.Edificio}
+                </Text>
+              </View>
+              
               {isEventoSelected(item) && (
-                <Text style={styles.checkmark}>✓</Text>
+                <View style={[styles.selectionIndicator, isDarkMode && styles.darkSelectionIndicator]}>
+                  <Text style={[styles.checkmark, isDarkMode && styles.darkCheckmark]}>✓</Text>
+                </View>
               )}
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+            </TouchableOpacity>
+          )}
+        />
+      )}
       
-      <View style={styles.footer}>
-        <Text style={styles.selectedCount}>
+      <View style={[styles.footer, isDarkMode && styles.darkFooter]}>
+        <Text style={[styles.selectedCount, isDarkMode && styles.darkSelectedCount]}>
           {selectedEventos.length} eventos seleccionados
         </Text>
         <TouchableOpacity
-          style={styles.configButton}
+          style={[styles.configButton, isDarkMode && styles.darkConfigButton]}
           onPress={() => navigation.navigate("Config" as never)}
         >
-          <Text style={styles.configButtonText}>Ver seleccionados</Text>
+          <Text style={[styles.configButtonText, isDarkMode && styles.darkConfigButtonText]}>
+            Ver seleccionados
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
