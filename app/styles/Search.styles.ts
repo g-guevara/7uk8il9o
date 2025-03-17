@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
   },
   darkContainer: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#000000",
   },
   title: {
     fontSize: 28,
@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     color: "#ecf0f1",
   },
   darkText: {
-    color: "#ecf0f1",
+    color: "#FFFFFF",
   },
   darkSubText: {
     color: "#95a5a6",
@@ -76,6 +76,67 @@ export const styles = StyleSheet.create({
   eventList: {
     flex: 1,
   },
+  
+  // Nuevos estilos para el diseño de tarjeta
+  cardEventItem: {
+    backgroundColor: "#fff",
+    marginBottom: 10,
+    borderRadius: 24, // Más redondeado como en la imagen
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  darkCardEventItem: {
+    backgroundColor: "#000000",
+    borderColor: "#FFFFFF",
+    borderWidth: 2,
+  },
+  eventHeader: {
+    marginBottom: 2,
+  },
+  eventTitle: {
+    fontSize: 16, // Tamaño más grande para el título
+    fontWeight: "bold",
+    color: "#2c3e50",
+  },
+  eventTimeContainer: {
+    marginBottom: 2,
+  },
+  eventTime: {
+    fontSize: 14, // Tamaño medio para el horario
+    color: "#7f8c8d",
+    fontStyle: "italic",
+  },
+  darkEventTime: {
+    color: "#FFFFFF",
+    fontStyle: "italic",
+  },
+  roomNumberContainer: {
+    alignSelf: "flex-start",
+    backgroundColor: "#000",
+    borderRadius: 50,
+    paddingVertical: 1,
+    paddingHorizontal:12,
+
+  },
+  darkRoomNumberContainer: {
+    backgroundColor: "#FFFFFF",
+  },
+  roomNumber: {
+    fontSize: 15, // Tamaño para el número de sala
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  darkRoomNumber: {
+    color: "#000",
+  },
+  
+  // Estilos originales que mantener
   eventItem: {
     backgroundColor: "#fff",
     marginBottom: 12,
@@ -106,12 +167,6 @@ export const styles = StyleSheet.create({
   },
   eventContent: {
     flex: 1,
-  },
-  eventTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    marginBottom: 4,
   },
   eventType: {
     fontSize: 14,
@@ -159,29 +214,26 @@ export const styles = StyleSheet.create({
     borderColor: "#ddd",
   },
   instructionText: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 16,
-    color: '#34495e',
+    color: "#34495e",
     marginTop: 20,
     marginBottom: 20,
     paddingHorizontal: 20,
-    fontStyle: 'italic'
-  },loadingContainer: {
+    fontStyle: "italic",
+  },
+  loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
-  
-  // Estilos para el texto del spinner de carga
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-    color: '#333',
-    textAlign: 'center',
+    color: "#333",
+    textAlign: "center",
   },
-  
-
   darkFooterButton: {
     backgroundColor: "#2c3e50",
     borderColor: "#34495e",

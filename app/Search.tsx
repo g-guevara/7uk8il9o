@@ -24,7 +24,7 @@ const Search = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Estado para controlar la carga
+  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
   // Cargar eventos desde la API, eventos seleccionados y preferencia de tema
@@ -36,7 +36,7 @@ const Search = () => {
 
   // Función para cargar eventos desde la API
   const fetchEventos = () => {
-    setIsLoading(true); // Indicar que está cargando
+    setIsLoading(true);
     fetch("https://7uk8il9o.vercel.app/eventos")
       .then(response => {
         if (!response.ok) {
@@ -46,14 +46,13 @@ const Search = () => {
       })
       .then((data: Evento[]) => {
         setEventos(data);
-        // Mostrar todos los eventos al cargar la página
         setFilteredEventos(data);
-        setIsLoading(false); // Finalizar la carga cuando los datos estén disponibles
+        setIsLoading(false);
       })
       .catch(error => {
         console.error("Error al obtener eventos:", error);
         Alert.alert("Error", "No se pudieron cargar los eventos. Intente nuevamente.");
-        setIsLoading(false); // Asegurarse de finalizar la carga incluso en caso de error
+        setIsLoading(false);
       });
   };
 
@@ -93,7 +92,7 @@ const Search = () => {
     }
   };
 
-  // Añadir useEffect para filtrar en tiempo real como en Welcome
+  // Filtrar eventos en tiempo real
   useEffect(() => {
     if (searchText === "") {
       setFilteredEventos(eventos);
@@ -128,20 +127,16 @@ const Search = () => {
       </View>
       
       {isLoading ? (
-        // Mostrar spinner de carga mientras se obtienen los datos
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={isDarkMode ? "#FFFFFF" : "#000000"} />
-
         </View>
       ) : searchText.trim() !== "" && filteredEventos.length === 0 ? (
-        // Mostrar mensaje de no resultados cuando hay una búsqueda sin coincidencias
         <View style={styles.noResultsContainer}>
           <Text style={[styles.noResultsText, isDarkMode && styles.darkText]}>
             No se encontraron resultados para "{searchText}".
           </Text>
         </View>
       ) : (
-        // Mostrar la lista de eventos
         <FlatList
           data={filteredEventos}
           keyExtractor={(item) => item._id}
@@ -165,23 +160,30 @@ const Search = () => {
           renderItem={({ item }) => (
             <View
               style={[
-                styles.eventItem,
-                isDarkMode && styles.darkEventItem
+                styles.cardEventItem,
+                isDarkMode && styles.darkCardEventItem
               ]}
             >
-              <View style={styles.eventContent}>
+              <View style={styles.eventHeader}>
                 <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
                   {item.Evento}
                 </Text>
-                <Text style={[styles.eventDetails, isDarkMode && styles.darkText]}>
-                  {item.Fecha} • {item.Inicio} - {item.Fin}
+              </View>
+              
+              <View style={styles.eventTimeContainer}>
+                <Text style={[styles.eventTime, isDarkMode && styles.darkEventTime]}>
+                  {item.Inicio} - {item.Fin}
                 </Text>
-                <Text style={[styles.eventLocation, isDarkMode && styles.darkText]}>
-                  {item.Sala}, {item.Edificio}, {item.Campus}
+              </View>
+              
+              <View style={[styles.roomNumberContainer, isDarkMode && styles.darkRoomNumberContainer]}>
+                <Text style={[styles.roomNumber, isDarkMode && styles.darkRoomNumber]}>
+                  {item.Sala}
                 </Text>
               </View>
             </View>
           )}
+          numColumns={1}
         />
       )}
     </View>
