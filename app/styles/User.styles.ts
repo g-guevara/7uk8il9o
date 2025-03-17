@@ -75,12 +75,12 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
   },
   selectedEventItem: {
-    backgroundColor: "#e8f4fd",
-    borderColor: "#3498db",
+    backgroundColor: "#e6e6e6",
+    borderColor: "#000000",
   },
   darkSelectedEventItem: {
-    backgroundColor: "#2980b9",
-    borderColor: "#3498db",
+    backgroundColor: "#333333",
+    borderColor: "#FFFFFF",
   },
   eventContent: {
     flex: 1,
@@ -123,8 +123,8 @@ export const styles = StyleSheet.create({
   },
   checkmark: {
     color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
+    fontSize: 12,
+    fontWeight: "normal",
   },
   darkCheckmark: {
     color: "#000",

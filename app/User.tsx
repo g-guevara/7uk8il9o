@@ -121,11 +121,9 @@ const User = () => {
     if (isSelected) {
       // Quitar de la selección
       updatedSelectedEventos = selectedEventos.filter(e => e._id !== evento._id);
-      Alert.alert("Evento eliminado", `"${evento.Evento}" ha sido eliminado de tus selecciones.`);
     } else {
       // Agregar a la selección
       updatedSelectedEventos = [...selectedEventos, evento];
-      Alert.alert("Evento seleccionado", `"${evento.Evento}" ha sido agregado a tus selecciones.`);
     }
     
     setSelectedEventos(updatedSelectedEventos);
@@ -197,17 +195,13 @@ const User = () => {
                 </View>
                 
                 <Text style={[styles.eventDetails, isDarkMode && styles.darkEventDetails]}>
-                  {item.Tipo} en {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
+                  {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
                 </Text>
-                
-                <Text style={[styles.eventLocation, isDarkMode && styles.darkSubText]}>
-                  {item.Sala}, {item.Edificio}
-                </Text>
+
               </View>
               
               {isEventoSelected(item) && (
                 <View style={[styles.selectionIndicator, isDarkMode && styles.darkSelectionIndicator]}>
-                  <Text style={[styles.checkmark, isDarkMode && styles.darkCheckmark]}>✓</Text>
                 </View>
               )}
             </TouchableOpacity>
