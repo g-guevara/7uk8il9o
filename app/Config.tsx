@@ -116,7 +116,7 @@ const Config = () => {
             </Text>
             <TouchableOpacity
               style={styles.addFirstButton}
-              onPress={() => navigation.navigate("Welcome" as never)}
+              onPress={() => navigation.navigate("User" as never)}
             >
               <Text style={styles.addFirstButtonText}>Agregar eventos</Text>
             </TouchableOpacity>
@@ -133,7 +133,7 @@ const Config = () => {
                     {item.Evento}
                   </Text>
                   <Text style={[styles.eventDetails, isDarkMode && styles.darkSubText]}>
-                    {item.Fecha} • {item.Inicio} - {item.Fin}
+                    {item.Fecha} • {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
                   </Text>
                   <Text style={[styles.eventLocation, isDarkMode && styles.darkSubText]}>
                     {item.Sala}, {item.Campus}
@@ -150,8 +150,6 @@ const Config = () => {
           />
         )}
       </View>
-      
-
     </View>
   );
 };

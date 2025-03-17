@@ -4,40 +4,18 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#FFFFFF", // Fondo claro por defecto
   },
   darkContainer: {
-    backgroundColor: "#1a1a1a",
+    backgroundColor: "#1a1a1a", // Fondo oscuro
   },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    marginTop: 20,
-    marginBottom: 24,
-  },
-  darkTitle: {
-    color: "#ecf0f1",
-  },
-  darkText: {
-    color: "#ecf0f1",
-  },
-  darkSubText: {
-    color: "#95a5a6",
-  },
+  
+  // Sección de tema
   themeSection: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    padding: 16,
     marginBottom: 24,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2c3e50",
-    marginBottom: 12,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   themeToggleContainer: {
     flexDirection: "row",
@@ -46,8 +24,14 @@ export const styles = StyleSheet.create({
   },
   themeLabel: {
     fontSize: 16,
+    fontWeight: "bold",
     color: "#2c3e50",
   },
+  darkText: {
+    color: "#FFFFFF",
+  },
+  
+  // Sección de eventos
   eventsSection: {
     flex: 1,
   },
@@ -57,39 +41,42 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#2c3e50",
+  },
   searchMoreButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#000",
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
+    paddingVertical: 8,
+    borderRadius: 50,
   },
   searchMoreButtonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 14,
   },
+  
+  // Eventos
   eventsList: {
     flex: 1,
   },
   eventItem: {
-    backgroundColor: "#fff",
-    marginBottom: 12,
-    borderRadius: 8,
-    padding: 16,
+    backgroundColor: "#F2F2F7",
+    marginBottom: 10,
+    borderRadius: 24,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#F2F2F7",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
   },
   darkEventItem: {
-    backgroundColor: "#2c3e50",
-    borderColor: "#34495e",
+    backgroundColor: "#2C2C2E",
+    borderColor: "#2C2C2E",
+    borderWidth: 2,
   },
   eventContent: {
     flex: 1,
@@ -98,78 +85,57 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#2c3e50",
-    marginBottom: 6,
+    marginBottom: 2,
   },
   eventDetails: {
     fontSize: 14,
     color: "#7f8c8d",
-    marginBottom: 4,
+    marginBottom: 2,
+    fontStyle: "italic",
   },
   eventLocation: {
     fontSize: 14,
     color: "#95a5a6",
   },
+  darkSubText: {
+    color: "#95a5a6",
+  },
   removeButton: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: "#e74c3c",
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 8,
   },
   removeButtonText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
   },
+  
+  // Estado vacío
   emptyStateContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 32,
+    padding: 20,
   },
   emptyStateText: {
     fontSize: 16,
     color: "#7f8c8d",
-    marginBottom: 16,
     textAlign: "center",
+    marginBottom: 16,
   },
   addFirstButton: {
-    backgroundColor: "#3498db",
+    backgroundColor: "#000",
     paddingHorizontal: 16,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 50,
   },
   addFirstButtonText: {
     color: "#fff",
     fontWeight: "bold",
-  },
-  footer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 16,
-    paddingVertical: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-  },
-  footerButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  darkFooterButton: {
-    backgroundColor: "#2c3e50",
-    borderColor: "#34495e",
-  },
-  footerButtonText: {
-    color: "#2c3e50",
-    fontWeight: "bold",
-  },
-  darkFooterButtonText: {
-    color: "#ecf0f1",
   },
 });
