@@ -18,7 +18,7 @@ interface Evento {
   fechaActualizacion: string;
 }
 
-const Welcome = () => {
+const User = () => {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [filteredEventos, setFilteredEventos] = useState<Evento[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -157,4 +157,4 @@ const Welcome = () => {
   );
 };
 
-export default Welcome;
+export default User;

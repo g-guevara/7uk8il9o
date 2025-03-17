@@ -123,10 +123,12 @@ export const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 50,
     paddingVertical: 1,
+    marginTop: 2,
     paddingHorizontal:12,
 
   },
   darkRoomNumberContainer: {
+    marginTop: 2,
     backgroundColor: "#FFFFFF",
   },
   roomNumber: {

@@ -171,14 +171,14 @@ const Search = () => {
               </View>
               
               <View style={styles.eventTimeContainer}>
-                <Text style={[styles.eventTime, isDarkMode && styles.darkEventTime]}>
-                  {item.Inicio} - {item.Fin}
-                </Text>
-              </View>
+  <Text style={[styles.eventTime, isDarkMode && styles.darkEventTime]}>
+    {item.Tipo} en {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
+  </Text>
+</View>
               
               <View style={[styles.roomNumberContainer, isDarkMode && styles.darkRoomNumberContainer]}>
                 <Text style={[styles.roomNumber, isDarkMode && styles.darkRoomNumber]}>
-                  {item.Sala}
+                  {item.Sala} 
                 </Text>
               </View>
             </View>
