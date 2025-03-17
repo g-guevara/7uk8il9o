@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import { styles } from './styles/Search.styles'
+import { styles } from './styles/Search.styles';
+import { useDataSync } from "./DataSyncContext";
+
 
 // Definir el tipo de datos que vienen de la API
 interface Evento {
@@ -19,42 +21,48 @@ interface Evento {
 }
 
 const Search = () => {
-  const [eventos, setEventos] = useState<Evento[]>([]);
   const [filteredEventos, setFilteredEventos] = useState<Evento[]>([]);
   const [searchText, setSearchText] = useState("");
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
+  
+  // Use the DataSyncContext to access stored events
+  const { events, isLoading: isSyncLoading } = useDataSync();
+  const [isLocalLoading, setIsLocalLoading] = useState(true);
+  
+  // Combined loading state
+  const isLoading = isSyncLoading || isLocalLoading;
 
-  // Cargar eventos desde la API, eventos seleccionados y preferencia de tema
+  // Cargar eventos seleccionados y preferencia de tema
   useEffect(() => {
-    fetchEventos();
     loadSelectedEventos();
     loadThemePreference();
   }, []);
 
-  // Función para cargar eventos desde la API
-  const fetchEventos = () => {
-    setIsLoading(true);
-    fetch("https://7uk8il9o.vercel.app/eventos")
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data: Evento[]) => {
-        setEventos(data);
-        setFilteredEventos(data);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error("Error al obtener eventos:", error);
-        Alert.alert("Error", "No se pudieron cargar los eventos. Intente nuevamente.");
-        setIsLoading(false);
-      });
-  };
+  // Set filtered events when search text or events change
+  useEffect(() => {
+    if (events.length > 0) {
+      if (searchText === "") {
+        setFilteredEventos(events);
+      } else {
+        const searchTerm = searchText.toLowerCase();
+        const results = events.filter(evento => 
+          evento.Evento.toLowerCase().includes(searchTerm) ||
+          evento.Tipo.toLowerCase().includes(searchTerm) ||
+          evento.Fecha.toLowerCase().includes(searchTerm) ||
+          evento.Inicio.toLowerCase().includes(searchTerm) ||
+          evento.Fin.toLowerCase().includes(searchTerm) ||
+          evento.Sala.toLowerCase().includes(searchTerm) ||
+          evento.Edificio.toLowerCase().includes(searchTerm) ||
+          evento.Campus.toLowerCase().includes(searchTerm)
+        );
+        
+        setFilteredEventos(results);
+      }
+      setIsLocalLoading(false);
+    }
+  }, [searchText, events]);
 
   // Cargar eventos seleccionados desde AsyncStorage
   const loadSelectedEventos = async () => {
@@ -91,27 +99,6 @@ const Search = () => {
       Alert.alert("Error", "No se pudieron guardar tus selecciones.");
     }
   };
-
-  // Filtrar eventos en tiempo real
-  useEffect(() => {
-    if (searchText === "") {
-      setFilteredEventos(eventos);
-    } else {
-      const searchTerm = searchText.toLowerCase();
-      const results = eventos.filter(evento => 
-        evento.Evento.toLowerCase().includes(searchTerm) ||
-        evento.Tipo.toLowerCase().includes(searchTerm) ||
-        evento.Fecha.toLowerCase().includes(searchTerm) ||
-        evento.Inicio.toLowerCase().includes(searchTerm) ||
-        evento.Fin.toLowerCase().includes(searchTerm) ||
-        evento.Sala.toLowerCase().includes(searchTerm) ||
-        evento.Edificio.toLowerCase().includes(searchTerm) ||
-        evento.Campus.toLowerCase().includes(searchTerm)
-      );
-      
-      setFilteredEventos(results);
-    }
-  }, [searchText, eventos]);
 
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
@@ -171,10 +158,10 @@ const Search = () => {
               </View>
               
               <View style={styles.eventTimeContainer}>
-  <Text style={[styles.eventTime, isDarkMode && styles.darkEventTime]}>
-    {item.Tipo} en {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
-  </Text>
-</View>
+                <Text style={[styles.eventTime, isDarkMode && styles.darkEventTime]}>
+                  {item.Tipo} en {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
+                </Text>
+              </View>
               
               <View style={[styles.roomNumberContainer, isDarkMode && styles.darkRoomNumberContainer]}>
                 <Text style={[styles.roomNumber, isDarkMode && styles.darkRoomNumber]}>

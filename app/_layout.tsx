@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { StatusBar } from "react-native";
 import { Stack } from "expo-router";
 import { ThemeProvider, useTheme } from "./ThemeContext";
+import { DataSyncProvider } from "./DataSyncContext";
 
 // Componente interno que usa el contexto de tema
 function StackNavigator() {
@@ -59,7 +60,9 @@ function StackNavigator() {
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <StackNavigator />
+      <DataSyncProvider>
+        <StackNavigator />
+      </DataSyncProvider>
     </ThemeProvider>
   );
 }
