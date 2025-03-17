@@ -320,6 +320,37 @@ groupedEventCard: {
   shadowOpacity: 0.3,
   shadowRadius: 4,
   elevation: 6,
+},// Añade estos estilos a tu archivo Index.styles.ts
+
+// Estilos para el indicador de lapso de tiempo entre eventos
+timeGapContainer: {
+  height: 60,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginVertical: 8,
+  position: 'relative',
+},
+timeGapLine: {
+  position: 'absolute',
+  width: 2,
+  height: '100%',
+  backgroundColor: '#ccc',
+  left: 23, // Alinear con el centro de la columna de tiempo
+},
+timeGapBadge: {
+  backgroundColor: '#e6e6e6',
+  borderRadius: 12,
+  paddingHorizontal: 10,
+  paddingVertical: 4,
+  position: 'absolute',
+  left: 35,
+  borderWidth: 1,
+
+},
+timeGapText: {
+  fontSize: 12,
+  fontWeight: 'bold',
+  color: '#666',
 },
 // Columna derecha con detalles del evento
 

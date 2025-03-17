@@ -169,6 +169,7 @@ export const styles = StyleSheet.create({
   eventContent: {
     flex: 1,
   },
+  
   eventType: {
     fontSize: 14,
     color: "#3498db",

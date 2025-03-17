@@ -35,6 +35,15 @@ interface EventCardData {
   room: string;
   color: string;
   isGrouped?: boolean;
+  rawStartTime: number; // Added for easier time gap calculation
+  rawEndTime: number;   // Added for easier time gap calculation
+}
+
+// Interface for time gap display
+interface TimeGap {
+  id: string;
+  hoursDiff: number;
+  minutesDiff: number;
 }
 
 // Color palette for the cards
@@ -52,10 +61,17 @@ const CARD_COLORS = [
 const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
   const [selectedEvents, setSelectedEvents] = useState<Evento[]>([]);
   const [cardEvents, setCardEvents] = useState<EventCardData[]>([]);
+  const [timeGaps, setTimeGaps] = useState<TimeGap[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   
   // Keep track of scroll position
   const scrollY = useRef(new Animated.Value(0)).current;
+  
+  // Helper function to parse time
+  const parseTime = (timeStr: string): number => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes; // Convert to minutes for easier comparison
+  };
   
   // Load selected events from AsyncStorage
   useEffect(() => {
@@ -72,7 +88,13 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
           
           // Transform the events to the card format
           const transformedEvents = transformEventsToCardFormat(groupedEvents);
+          
+          // Sort events by start time
+          transformedEvents.sort((a, b) => a.rawStartTime - b.rawStartTime);
           setCardEvents(transformedEvents);
+          
+          // Calculate time gaps between events
+          calculateTimeGaps(transformedEvents);
         }
       } catch (error) {
         console.error("Error loading selected events:", error);
@@ -85,10 +107,43 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
     loadSelectedEvents();
   }, []);
   
-  // Helper function to parse time
-  const parseTime = (timeStr: string): number => {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return hours * 60 + minutes; // Convert to minutes for easier comparison
+  // Calculate time gaps between events
+  const calculateTimeGaps = (events: EventCardData[]) => {
+    if (events.length <= 1) {
+      setTimeGaps([]);
+      return;
+    }
+    
+    const gaps: TimeGap[] = [];
+    
+    for (let i = 0; i < events.length - 1; i++) {
+      const currentEvent = events[i];
+      const nextEvent = events[i + 1];
+      
+      // Calculate time difference in minutes
+      const timeDiffMinutes = nextEvent.rawStartTime - currentEvent.rawEndTime;
+      
+      // Only add gap if it's more than 2 hours (120 minutes)
+      if (timeDiffMinutes > 120) {
+        const hoursDiff = Math.floor(timeDiffMinutes / 60);
+        const minutesDiff = timeDiffMinutes % 60;
+        
+        gaps.push({
+          id: `gap-${i}`,
+          hoursDiff,
+          minutesDiff
+        });
+      } else {
+        // Add a placeholder gap with 0 difference to maintain array alignment
+        gaps.push({
+          id: `gap-${i}`,
+          hoursDiff: 0,
+          minutesDiff: 0
+        });
+      }
+    }
+    
+    setTimeGaps(gaps);
   };
   
   // Function to group similar events
@@ -186,25 +241,48 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
       const startTimeParts = event.Inicio.split(':');
       const endTimeParts = event.Fin.split(':');
       
+      // Get raw time values for calculations
+      const rawStartTime = parseTime(event.Inicio);
+      const rawEndTime = parseTime(event.Fin);
+      
       // Check if this is likely a grouped event (longer duration)
-      const startTime = parseTime(event.Inicio);
-      const endTime = parseTime(event.Fin);
-      const duration = endTime - startTime;
+      const duration = rawEndTime - rawStartTime;
       const isGroupedEvent = duration > 120; // If more than 2 hours, probably grouped
       
       return {
         id: event._id,
-        titleFirstLine: titleFirstLine,
-        titleSecondLine: isGroupedEvent ? `${titleSecondLine} (Sesión múltiple)` : titleSecondLine,
+        titleFirstLine: titleFirstLine.toUpperCase(), 
+        titleSecondLine: titleSecondLine.toUpperCase(), 
         startTime: startTimeParts[0] || "00",
         endTime: endTimeParts[0] || "00",
         startMinutes: startTimeParts[1] || "00",
         endMinutes: endTimeParts[1] || "00",
         room: event.Sala,
         color: CARD_COLORS[index % CARD_COLORS.length], // Cycle through colors
-        isGrouped: isGroupedEvent
+        isGrouped: isGroupedEvent,
+        rawStartTime,
+        rawEndTime
       };
     });
+  };
+  
+  // Component to render the time gap between events
+  const TimeGapIndicator = ({ hoursDiff, minutesDiff }: { hoursDiff: number, minutesDiff: number }) => {
+    if (hoursDiff === 0 && minutesDiff === 0) {
+      return null; // Don't show anything for small gaps
+    }
+    
+    return (
+      <View style={styles.timeGapContainer}>
+        <View style={styles.timeGapLine} />
+        <View style={styles.timeGapBadge}>
+          <Text style={styles.timeGapText}>
+            {hoursDiff > 0 ? `${hoursDiff}h` : ""} 
+            {minutesDiff > 0 ? `${minutesDiff}m` : ""}
+          </Text>
+        </View>
+      </View>
+    );
   };
   
   // Show a message if no events are selected
@@ -240,67 +318,77 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.eventListContentContainer}
       >
-        {cardEvents.map((event) => (
-          <TouchableOpacity
-            key={event.id}
-            style={[
-              styles.eventCard,
-              { backgroundColor: event.color }
-            ]}
-            onPress={() => {
-              // Navigate to details if needed
-              console.log(`Pressed on event: ${event.titleFirstLine} ${event.titleSecondLine}`);
-            }}
-          >
-            <View style={styles.eventCardContent}>
-              {/* Left side with times */}
-              <View style={styles.eventTimeColumn}>
-                {/* Start time */}
-                <Text style={styles.timeNumber}>{event.startTime}</Text>
-                <Text style={styles.timeMinutes}>{event.startMinutes}</Text>
+        {cardEvents.map((event, index) => (
+          <React.Fragment key={`event-block-${event.id}`}>
+            <TouchableOpacity
+              key={event.id}
+              style={[
+                styles.eventCard,
+                { backgroundColor: event.color }
+              ]}
+              onPress={() => {
+                // Navigate to details if needed
+                console.log(`Pressed on event: ${event.titleFirstLine} ${event.titleSecondLine}`);
+              }}
+            >
+              <View style={styles.eventCardContent}>
+                {/* Left side with times */}
+                <View style={styles.eventTimeColumn}>
+                  {/* Start time */}
+                  <Text style={styles.timeNumber}>{event.startTime}</Text>
+                  <Text style={styles.timeMinutes}>{event.startMinutes}</Text>
+                  
+                  {/* Vertical Divider line */}
+                  <View style={styles.timeVerticalDivider} />
+                  
+                  {/* End time */}
+                  <Text style={styles.timeNumber}>{event.endTime}</Text>
+                  <Text style={styles.timeMinutes}>{event.endMinutes}</Text>
+                </View>
                 
-                {/* Vertical Divider line */}
-                <View style={styles.timeVerticalDivider} />
-                
-                {/* End time */}
-                <Text style={styles.timeNumber}>{event.endTime}</Text>
-                <Text style={styles.timeMinutes}>{event.endMinutes}</Text>
-              </View>
-              
-              {/* Right side with event details */}
-              <View style={styles.eventDetailsColumn}>
-                {/* Event title split into two lines */}
-                <View style={styles.titleContainer}>
-                  <View style={styles.titleFirstLineContainer}>
+                {/* Right side with event details */}
+                <View style={styles.eventDetailsColumn}>
+                  {/* Event title split into two lines */}
+                  <View style={styles.titleContainer}>
+                    <View style={styles.titleFirstLineContainer}>
+                      <Text 
+                        style={styles.eventTitleFirstLine} 
+                        numberOfLines={1}
+                        adjustsFontSizeToFit={true}
+                        minimumFontScale={0.5}
+                      >
+                        {event.titleFirstLine.toUpperCase()}
+                      </Text>
+                    </View>
                     <Text 
-                      style={styles.eventTitleFirstLine} 
-                      numberOfLines={1}
-                      adjustsFontSizeToFit={true}
-                      minimumFontScale={0.5}
+                      style={styles.eventTitleSecondLine} 
+                      numberOfLines={2} 
+                      ellipsizeMode="tail"
                     >
-                      {event.titleFirstLine.toUpperCase()}
+                      {event.titleSecondLine}
                     </Text>
                   </View>
-                  <Text 
-                    style={styles.eventTitleSecondLine} 
-                    numberOfLines={2} 
-                    ellipsizeMode="tail"
-                  >
-                    {event.titleSecondLine}
-                  </Text>
-                </View>
-                
-                {/* Room display */}
-                <View style={styles.roomContainerSimple}>
-                  <View style={styles.roomBadge}>
-                    <Text style={[styles.roomText, { color: event.color }]}>
-                      {event.room}
-                    </Text>
+                  
+                  {/* Room display */}
+                  <View style={styles.roomContainerSimple}>
+                    <View style={styles.roomBadge}>
+                      <Text style={[styles.roomText, { color: event.color }]}>
+                        {event.room}
+                      </Text>
+                    </View>
                   </View>
                 </View>
               </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            
+            {/* Add time gap indicator if this isn't the last event */}
+            {index < timeGaps.length && (
+              <TimeGapIndicator 
+                hoursDiff={timeGaps[index].hoursDiff} 
+                minutesDiff={timeGaps[index].minutesDiff} 
+              />
+            )}
+          </React.Fragment>
         ))}
       </ScrollView>
     </View>
