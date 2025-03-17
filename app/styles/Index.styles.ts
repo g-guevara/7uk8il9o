@@ -20,6 +20,42 @@ export const styles = StyleSheet.create({
     marginBottom: 32,
     alignItems: "center",
   },
+// Actualiza estos estilos en tu archivo Index.styles.ts
+
+// Estilo para la primera línea del título
+eventTitleFirstLine: {
+  fontSize: 50,           // Tamaño inicial del texto (se reducirá si es necesario)
+  fontWeight: '400',
+  transform: [{ scaleY: 0.95 }], // Ajusta la altura ligeramente
+  color: '#000000',
+  letterSpacing: 0,       // Espaciado entre letras
+  marginBottom: 0,        // Controla el espacio entre las dos líneas
+  flexShrink: 1,          // Permitir que se encoja
+  alignSelf: 'flex-start', // Alinea al inicio
+  width: '100%',          // Ocupar todo el ancho disponible
+},
+
+// Contenedor para la primera línea del título
+titleFirstLineContainer: {
+  marginBottom: -5,      // Este margin debería funcionar en un View
+  width: '100%',          // Ocupar todo el ancho disponible
+  paddingRight: 10,       // Dar un poco de espacio al final
+},
+  // Actualiza estos estilos en tu archivo Index.styles.ts
+
+
+// Contenedor para la primera línea del título
+
+// Estilo para la segunda línea del título (ej: "MEETING")
+eventTitleSecondLine: {
+  fontSize: 23,           // Tamaño del texto (ajustado a 23 como pediste)
+  transform: [{ scaleY: 0.95 }],
+  fontWeight: '400',
+  color: '#000000',
+  letterSpacing: 0,       // Espaciado entre letras
+  flexWrap: 'wrap',       // Permite que el texto haga wrapping
+  flexShrink: 1           // Permite que el texto se encoja si necesita
+},
   title: {
     fontSize: 32,
     fontWeight: "bold",
@@ -113,34 +149,8 @@ export const styles = StyleSheet.create({
   userIconButton: {
     padding: 5,
   },
-  titleContainer: {
-    marginBottom: 12,
-  },
-  
-  // Estilo para la primera línea del título (por ejemplo, "DESIGN")
-  eventTitleFirstLine: {
-    fontSize: 50,          // Tamaño del texto
-    fontWeight: '400',
-    transform: [{ scaleY: 0.95 }], // Ajusta la altura ligeramente
-    
 
-    color: '#000000',
-    letterSpacing: 0,      // Espaciado entre letras
-    marginBottom: 0,       // ESTO CONTROLA EL ESPACIO ENTRE LAS DOS LÍNEAS
-                           // Valor pequeño (1-3) = líneas más juntas como en la imagen 2
-                           // Valor grande (8-15) = líneas más separadas como en la imagen 1
-  },
-  titleFirstLineContainer: {
-    marginBottom: -20, // Este margin debería funcionar en un View
-  },
-  // Estilo para la segunda línea del título (por ejemplo, "MEETING")
-  eventTitleSecondLine: {
-    fontSize: 50,          // Tamaño del texto
-    transform: [{ scaleY: 0.95 }],
-    fontWeight: '400',
-    color: '#000000',
-    letterSpacing: 0,      // Espaciado entre letras
-  },
+
   // Nuevos estilos para agregar a tu StyleSheet.create({})
 // Agrega estos estilos al final de tu objeto de estilos existente
 
@@ -148,6 +158,40 @@ export const styles = StyleSheet.create({
 mainContentContainer: {
   flex: 1,
   width: '100%',
+},
+
+// Añade o actualiza estos estilos en tu archivo Index.styles.ts
+
+// Contenedor para el título completo
+titleContainer: {
+  marginBottom: 12,
+  flex: 1,        // Asegura que el contenedor ocupe todo el espacio disponible
+  maxWidth: '85%' // Limita el ancho para no chocar con otros elementos
+},
+
+// Columna derecha con detalles del evento
+eventDetailsColumn: {
+  flex: 1,
+  paddingLeft: 15,
+  justifyContent: 'center',
+  width: '100%'   // Asegura que ocupe todo el ancho disponible
+},
+
+// Contenido de la tarjeta de eventos
+eventCardContent: {
+  flexDirection: 'row',
+  alignItems: 'flex-start', // Cambiado a flex-start para mejor alineación
+  width: '100%',
+  paddingHorizontal: 5     // Añade un poco de padding para mejor espaciado
+},
+
+// Tarjeta de evento 
+eventCard: {
+  width: '100%',
+  borderRadius: 33,
+  padding: 15,
+  marginBottom: 8,
+  minHeight: 120          // Altura mínima para asegurar que quepa el contenido
 },
 
 // Reducir el margen superior para que la lista comience más arriba
@@ -163,19 +207,7 @@ eventListContainer: {
   marginVertical: 10,
 },
 
-// Tarjeta de evento con el nuevo diseño
-eventCard: {
-  width: '100%',
-  borderRadius: 33,
-  padding: 15,
-  marginBottom: 8,
-},
 
-// Contenido de la tarjeta con disposición en fila
-eventCardContent: {
-  flexDirection: 'row',
-  alignItems: 'center',
-},
 
 // Columna izquierda con la información de tiempo
 eventTimeColumn: {
@@ -282,12 +314,6 @@ roomBadgeWithBorder: {
 },
 
 // Columna derecha con detalles del evento
-eventDetailsColumn: {
-  flex: 1,
-  paddingLeft: 15,
-  justifyContent: 'center',
-},
-
 
 titleSpacer: {
   height: 0, // Ajusta este valor para controlar el espacio

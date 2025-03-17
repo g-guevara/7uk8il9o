@@ -84,15 +84,23 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
   // Transform the event data to the format needed for the cards
   const transformEventsToCardFormat = (events: Evento[]): EventCardData[] => {
     return events.map((event, index) => {
-      // Split the event title into two lines if it's long
-      let titleFirstLine = event.Evento;
-      let titleSecondLine = event.Tipo;
+      // Get the event title and handle any truncation needed
+      let eventTitle = event.Evento;
       
-      if (event.Evento.length > 15) {
-        const words = event.Evento.split(' ');
-        const midpoint = Math.ceil(words.length / 2);
-        titleFirstLine = words.slice(0, midpoint).join(' ');
-        titleSecondLine = words.slice(midpoint).join(' ');
+      // If the title contains "Sec", cut everything from "Sec" onwards
+      const secIndex = eventTitle.indexOf("Sec");
+      if (secIndex !== -1) {
+        eventTitle = eventTitle.substring(0, secIndex).trim();
+      }
+      
+      // Get first word for the first line
+      const words = eventTitle.split(' ');
+      let titleFirstLine = words[0] || ""; // First word only
+      let titleSecondLine = words.slice(1).join(' '); // Rest of the words
+      
+      // If there's only one word, use the event type as the second line
+      if (words.length <= 1) {
+        titleSecondLine = event.Tipo;
       }
       
       // Extract hours and minutes from start and end times
@@ -178,9 +186,22 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
                 {/* Event title split into two lines */}
                 <View style={styles.titleContainer}>
                   <View style={styles.titleFirstLineContainer}>
-                    <Text style={styles.eventTitleFirstLine}>{event.titleFirstLine}</Text>
+                    <Text 
+                      style={styles.eventTitleFirstLine} 
+                      numberOfLines={1}
+                      adjustsFontSizeToFit={true}
+                      minimumFontScale={0.5}
+                    >
+                      {event.titleFirstLine.toUpperCase()}
+                    </Text>
                   </View>
-                  <Text style={styles.eventTitleSecondLine}>{event.titleSecondLine}</Text>
+                  <Text 
+                    style={styles.eventTitleSecondLine} 
+                    numberOfLines={2} 
+                    ellipsizeMode="tail"
+                  >
+                    {event.titleSecondLine}
+                  </Text>
                 </View>
                 
                 {/* Room display */}
