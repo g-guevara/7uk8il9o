@@ -312,7 +312,15 @@ roomBadgeWithBorder: {
   borderWidth: 1,
   borderColor: '#FFFFFF',
 },
-
+groupedEventCard: {
+  borderWidth: 2,
+  borderColor: '#FFFFFF',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.3,
+  shadowRadius: 4,
+  elevation: 6,
+},
 // Columna derecha con detalles del evento
 
 titleSpacer: {
