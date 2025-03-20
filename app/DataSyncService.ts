@@ -62,7 +62,7 @@ const setFirstLaunchComplete = async (): Promise<void> => {
  */
 const setupRandomTimeValues = async (): Promise<{ hour: number, minutes: number }> => {
   try {
-    const hour = getRandomInt(1, 3);
+    const hour = getRandomInt(3, 4);
     const minutes = getRandomInt(1, 59);
     
     await AsyncStorage.setItem(STORAGE_KEYS.GROUP_TICKET_HOUR, hour.toString());
