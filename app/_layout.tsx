@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, Platform } from "react-native";
 import { Stack } from "expo-router";
 import { ThemeProvider, useTheme } from "./ThemeContext";
 import { DataSyncProvider } from "./DataSyncContext";
@@ -30,6 +30,12 @@ function StackNavigator() {
           contentStyle: {
             backgroundColor: isDarkMode ? "#1a1a1a" : "#ffffff",
           },
+          // Solo configurar para iOS
+          ...(Platform.OS === 'ios' ? {
+            // @ts-ignore - Estas propiedades pueden no estar en las tipificaciones pero funcionan en iOS
+            headerBackTitle: "Atrás",
+            headerBackTitleVisible: true
+          } : {})
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
