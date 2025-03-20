@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Animated, ScrollView, Alert } from "react-native";
-import { NavigationProp } from "@react-navigation/native";
+import { NavigationProp, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "./styles/Index.styles";
 
@@ -72,39 +72,48 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
     return hours * 60 + minutes; // Convert to minutes for easier comparison
   };
   
-  // Load selected events from AsyncStorage
-  useEffect(() => {
-    const loadSelectedEvents = async () => {
-      try {
-        setIsLoading(true);
-        const jsonValue = await AsyncStorage.getItem("selectedEventos");
-        if (jsonValue !== null) {
-          const events: Evento[] = JSON.parse(jsonValue);
-          setSelectedEvents(events);
-          
-          // Group events with the same name that occur within 2 hours of each other
-          const groupedEvents = groupSimilarEvents(events);
-          
-          // Transform the events to the card format
-          const transformedEvents = transformEventsToCardFormat(groupedEvents);
-          
-          // Sort events by start time
-          transformedEvents.sort((a, b) => a.rawStartTime - b.rawStartTime);
-          setCardEvents(transformedEvents);
-          
-          // Calculate time gaps between events
-          calculateTimeGaps(transformedEvents);
-        }
-      } catch (error) {
-        console.error("Error loading selected events:", error);
-        Alert.alert("Error", "No se pudieron cargar tus eventos seleccionados.");
-      } finally {
-        setIsLoading(false);
+  // Function to load selected events from AsyncStorage
+  const loadSelectedEvents = async () => {
+    try {
+      setIsLoading(true);
+      const jsonValue = await AsyncStorage.getItem("selectedEventos");
+      if (jsonValue !== null) {
+        const events: Evento[] = JSON.parse(jsonValue);
+        setSelectedEvents(events);
+        
+        // Group events with the same name that occur within 2 hours of each other
+        const groupedEvents = groupSimilarEvents(events);
+        
+        // Transform the events to the card format
+        const transformedEvents = transformEventsToCardFormat(groupedEvents);
+        
+        // Sort events by start time
+        transformedEvents.sort((a, b) => a.rawStartTime - b.rawStartTime);
+        setCardEvents(transformedEvents);
+        
+        // Calculate time gaps between events
+        calculateTimeGaps(transformedEvents);
       }
-    };
-    
+    } catch (error) {
+      console.error("Error loading selected events:", error);
+      Alert.alert("Error", "No se pudieron cargar tus eventos seleccionados.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // Load events when component mounts
+  useEffect(() => {
     loadSelectedEvents();
   }, []);
+  
+  // Reload events when the screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      loadSelectedEvents();
+      return () => {};
+    }, [])
+  );
   
   // Calculate time gaps between events
   const calculateTimeGaps = (events: EventCardData[]) => {
