@@ -46,17 +46,16 @@ interface TimeGap {
   minutesDiff: number;
 }
 
-// Color palette for the cards
-const CARD_COLORS = [
-  "#2becc6", // Teal
-  "#FFE135", // Yellow
-  "#2bb5ec", // Light Blue
-  "#B768A2", // Purple
-  "#9ACD32", // Green
-  "#FF6347", // Tomato
-  "#4682B4", // Steel Blue
-  "#FFA500"  // Orange
-];
+// Color palette for the cards based on building letter
+const CARD_COLORS: Record<string, string> = {
+  "A": "#2bb5ec", // Light Blue for building A
+  "B": "#2becc6", // Teal for building B
+  "C": "#bbef4c", // Green for building C
+  "D": "#9d6bce", // Lavender for building D
+  "E": "#FFE135", // Yellow for building E
+  "F": "#b32580", // Purple for building F
+  "default": "#2bb5ec" // Default color (Light Blue)
+};
 
 const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
   const [selectedEvents, setSelectedEvents] = useState<Evento[]>([]);
@@ -217,7 +216,7 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
   
   // Transform the event data to the format needed for the cards
   const transformEventsToCardFormat = (events: Evento[]): EventCardData[] => {
-    return events.map((event, index) => {
+    return events.map((event) => {
       // Get the event title and handle any truncation needed
       let eventTitle = event.Evento;
       
@@ -249,6 +248,16 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
       const duration = rawEndTime - rawStartTime;
       const isGroupedEvent = duration > 120; // If more than 2 hours, probably grouped
       
+      // Determine card color based on building letter
+      let cardColor = CARD_COLORS.default;
+      
+      // Extract building letter if the format is correct (space followed by capital letter A-F)
+      const buildingMatch = event.Edificio.match(/ ([A-F])/);
+      if (buildingMatch && buildingMatch[1]) {
+        const buildingLetter = buildingMatch[1]; // Get the matched letter
+        cardColor = CARD_COLORS[buildingLetter] || CARD_COLORS.default;
+      }
+      
       return {
         id: event._id,
         titleFirstLine: titleFirstLine.toUpperCase(), 
@@ -258,7 +267,7 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
         startMinutes: startTimeParts[1] || "00",
         endMinutes: endTimeParts[1] || "00",
         room: event.Sala,
-        color: CARD_COLORS[index % CARD_COLORS.length], // Cycle through colors
+        color: cardColor,
         isGrouped: isGroupedEvent,
         rawStartTime,
         rawEndTime
