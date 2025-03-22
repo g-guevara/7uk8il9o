@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Alert } from "react-native";
 import { styles } from './styles/Search.styles';
 import { Evento } from "./Search";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface SearchResultsProps {
   isLoading: boolean;
@@ -16,6 +17,52 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
   filteredEventos, 
   isDarkMode 
 }) => {
+  
+  // Función para manejar la selección de un evento
+  const handleEventSelection = (item: Evento) => {
+    Alert.alert(
+      "Agregar evento",
+      `¿Quieres agregar "${item.Evento}" a tus eventos seleccionados?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Agregar",
+          onPress: async () => {
+            try {
+              // Obtener eventos seleccionados actuales
+              const jsonValue = await AsyncStorage.getItem("selectedEventos");
+              let selectedEventos: Evento[] = [];
+              
+              if (jsonValue !== null) {
+                selectedEventos = JSON.parse(jsonValue);
+                
+                // Verificar si el evento ya está seleccionado
+                const isAlreadySelected = selectedEventos.some(e => e._id === item._id);
+                
+                if (isAlreadySelected) {
+                  Alert.alert("Evento ya agregado", "Este evento ya está en tu lista de seleccionados.");
+                  return;
+                }
+              }
+              
+              // Agregar el nuevo evento y guardar
+              const updatedSelectedEventos = [...selectedEventos, item];
+              await AsyncStorage.setItem("selectedEventos", JSON.stringify(updatedSelectedEventos));
+              
+              Alert.alert("Evento agregado", "El evento ha sido agregado a tu lista.");
+            } catch (error) {
+              console.error("Error al guardar evento seleccionado:", error);
+              Alert.alert("Error", "No se pudo guardar tu selección.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <>
       {isLoading ? (
@@ -50,11 +97,12 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             ) : null
           }
           renderItem={({ item }) => (
-            <View
+            <TouchableOpacity
               style={[
                 styles.cardEventItem,
                 isDarkMode && styles.darkCardEventItem
               ]}
+              onPress={() => handleEventSelection(item)}
             >
               <View style={styles.eventHeader}>
                 <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
@@ -73,7 +121,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
                   {item.Sala} 
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
           numColumns={1}
         />
