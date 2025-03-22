@@ -37,12 +37,12 @@ export interface Evento {
   
   // Color palette for the cards based on building letter
   export const CARD_COLORS: Record<string, string> = {
-    "A": "#2bb5ec", // Light Blue for building A
-    "B": "#2becc6", // Teal for building B
-    "C": "#bbef4c", // Green for building C
-    "D": "#9d6bce", // Lavender for building D
-    "E": "#FFE135", // Yellow for building E
-    "F": "#b32580", // Purple for building F
+    "A": "#2bb5ec", // Light Blue for building A 2bb5ec
+    "B": "#2becc6", // Teal for building B 2becc6
+    "C": "#bbef4c", // Green for building C bbef4c
+    "D": "#9d6bce", // Lavender for building D 9d6bce
+    "E": "#b32580", // Yellow for building E b32580
+    "F": "#FFE135", // Purple for building F FFE135
     "default": "#2bb5ec" // Default color (Light Blue)
   };
   
