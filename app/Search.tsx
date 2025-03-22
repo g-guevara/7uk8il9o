@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from "react-native";
+import { View, Text, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from './styles/Search.styles';
 import { useDataSync } from "./DataSyncContext";
 import { SearchResults } from "./SearchResults";
-import { FilterChip } from "./FilterChip";
+import { SearchFilters } from "./SearchFilters";
 
 // Definir el tipo de datos que vienen de la API
 export interface Evento {
@@ -60,23 +60,45 @@ const Search = () => {
     }
   }, [events]);
 
+  // Función para normalizar texto (eliminar tildes y convertir a minúsculas)
+  const normalizeText = (text: string): string => {
+    return text.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos/tildes
+      .replace(/[^\w\s]/gi, ''); // Eliminar caracteres especiales
+  };
+
   // Filter by text search
   useEffect(() => {
     if (events.length > 0) {
       if (searchText === "") {
         setOriginalFilteredEvents(events);
       } else {
-        const searchTerm = searchText.toLowerCase();
-        const results = events.filter(evento => 
-          evento.Evento.toLowerCase().includes(searchTerm) ||
-          evento.Tipo.toLowerCase().includes(searchTerm) ||
-          evento.Fecha.toLowerCase().includes(searchTerm) ||
-          evento.Inicio.toLowerCase().includes(searchTerm) ||
-          evento.Fin.toLowerCase().includes(searchTerm) ||
-          evento.Sala.toLowerCase().includes(searchTerm) ||
-          evento.Edificio.toLowerCase().includes(searchTerm) ||
-          evento.Campus.toLowerCase().includes(searchTerm)
-        );
+        const searchTerms = normalizeText(searchText).split(' ').filter(term => term.length > 0);
+        
+        const results = events.filter(evento => {
+          // Normaliza todos los campos de búsqueda
+          const normalizedEvento = normalizeText(evento.Evento);
+          const normalizedTipo = normalizeText(evento.Tipo);
+          const normalizedFecha = normalizeText(evento.Fecha);
+          const normalizedInicio = normalizeText(evento.Inicio);
+          const normalizedFin = normalizeText(evento.Fin);
+          const normalizedSala = normalizeText(evento.Sala);
+          const normalizedEdificio = normalizeText(evento.Edificio);
+          const normalizedCampus = normalizeText(evento.Campus);
+          
+          // Verifica que TODOS los términos de búsqueda estén presentes en al menos uno de los campos
+          return searchTerms.every(term => 
+            normalizedEvento.includes(term) ||
+            normalizedTipo.includes(term) ||
+            normalizedFecha.includes(term) ||
+            normalizedInicio.includes(term) ||
+            normalizedFin.includes(term) ||
+            normalizedSala.includes(term) ||
+            normalizedEdificio.includes(term) ||
+            normalizedCampus.includes(term)
+          );
+        });
         
         setOriginalFilteredEvents(results);
       }
@@ -137,77 +159,17 @@ const Search = () => {
         />
       </View>
       
-      {/* Filter chips section */}
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false}
-        style={styles.filtersScrollView}
-        contentContainerStyle={styles.filtersContainer}
-      >
-        {/* Sort options */}
-        <View style={styles.filterDropdownContainer}>
-          <Text style={[styles.filterLabel, isDarkMode && styles.darkText]}>Ordenar por:</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScrollView}>
-            <FilterChip 
-              label="A-Z" 
-              isSelected={sortMethod === 'alphabetical'} 
-              onPress={() => setSortMethod(sortMethod === 'alphabetical' ? 'none' : 'alphabetical')}
-              isDarkMode={isDarkMode}
-            />
-            <FilterChip 
-              label="Cronológico" 
-              isSelected={sortMethod === 'chronological'} 
-              onPress={() => setSortMethod(sortMethod === 'chronological' ? 'none' : 'chronological')}
-              isDarkMode={isDarkMode}
-            />
-          </ScrollView>
-        </View>
-        {/* Dropdown or selector for event types */}
-        <View style={styles.filterDropdownContainer}>
-          <Text style={[styles.filterLabel, isDarkMode && styles.darkText]}>Tipo:</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScrollView}>
-            <FilterChip 
-              label="Todos" 
-              isSelected={selectedType === null} 
-              onPress={() => setSelectedType(null)}
-              isDarkMode={isDarkMode}
-            />
-            {typeOptions.map(type => (
-              <FilterChip 
-                key={type}
-                label={type} 
-                isSelected={selectedType === type} 
-                onPress={() => setSelectedType(selectedType === type ? null : type)}
-                isDarkMode={isDarkMode}
-              />
-            ))}
-          </ScrollView>
-        </View>        
-        
-        {/* Dropdown or selector for campus */}
-        <View style={styles.filterDropdownContainer}>
-          <Text style={[styles.filterLabel, isDarkMode && styles.darkText]}>Campus:</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipScrollView}>
-            <FilterChip 
-              label="Todos" 
-              isSelected={selectedCampus === null} 
-              onPress={() => setSelectedCampus(null)}
-              isDarkMode={isDarkMode}
-            />
-            {campusOptions.map(campus => (
-              <FilterChip 
-                key={campus}
-                label={campus} 
-                isSelected={selectedCampus === campus} 
-                onPress={() => setSelectedCampus(selectedCampus === campus ? null : campus)}
-                isDarkMode={isDarkMode}
-              />
-            ))}
-          </ScrollView>
-        </View>
-        
-
-      </ScrollView>
+      <SearchFilters 
+        isDarkMode={isDarkMode}
+        campusOptions={campusOptions}
+        typeOptions={typeOptions}
+        selectedCampus={selectedCampus}
+        setSelectedCampus={setSelectedCampus}
+        selectedType={selectedType}
+        setSelectedType={setSelectedType}
+        sortMethod={sortMethod}
+        setSortMethod={setSortMethod}
+      />
       
       <SearchResults 
         isLoading={isLoading}
