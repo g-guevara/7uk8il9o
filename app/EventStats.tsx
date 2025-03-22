@@ -163,16 +163,13 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
       >
         {cardEvents.map((event, index) => (
           <React.Fragment key={`event-block-${event.id}`}>
-            <TouchableOpacity
+            {/* Cambiado de TouchableOpacity a View para eliminar el efecto de botón */}
+            <View
               key={event.id}
               style={[
                 styles.eventCard,
                 { backgroundColor: event.color }
               ]}
-              onPress={() => {
-                // Navigate to details if needed
-                console.log(`Pressed on event: ${event.titleFirstLine} ${event.titleSecondLine}`);
-              }}
             >
               <View style={styles.eventCardContent}>
                 {/* Left side with times */}
@@ -222,7 +219,7 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
                   </View>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
             
             {/* Add time gap indicator if this isn't the last event */}
             {index < timeGaps.length && (
