@@ -91,8 +91,8 @@ const Config = () => {
           <Switch
             value={isDarkMode}
             onValueChange={toggleTheme}
-            trackColor={{ false: "#ddd", true: "#3498db" }}
-            thumbColor={isDarkMode ? "#fff" : "#f4f3f4"}
+            trackColor={{ false: "#ddd", true: isDarkMode ? "#555" : "#ddd" }} // Color gris cuando está activado
+            thumbColor={isDarkMode ? "#fff" : "#f4f3f4"} // Mantiene el color del "thumb" blanco
           />
         </View>
       </View>
