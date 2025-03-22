@@ -1,25 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useDataSync } from './DataSyncContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface DataSyncInfoProps {
   isDarkMode: boolean;
 }
 
 const DataSyncInfo: React.FC<DataSyncInfoProps> = ({ isDarkMode }) => {
-  const { scheduledSyncTime, refreshEvents } = useDataSync();
+  const { scheduledSyncTime, refreshEvents, lastSuccessfulSync } = useDataSync();
 
   // Format time with leading zeros
   const formatTime = (hour: number, minutes: number) => {
-    return `0${hour}:${minutes < 10 ? '0' + minutes : minutes}`;
+    return `${hour < 10 ? '0' + hour : hour}:${minutes < 10 ? '0' + minutes : minutes}`;
   };
 
   const handleManualSync = () => {
     refreshEvents();
   };
 
+  // Format date for display
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'Nunca';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return 'Fecha desconocida';
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode && { backgroundColor: '#2C2C2E' }]}>
       <Text style={[styles.title, isDarkMode && styles.darkText]}>
         Sincronización de datos
       </Text>
@@ -33,6 +52,10 @@ const DataSyncInfo: React.FC<DataSyncInfoProps> = ({ isDarkMode }) => {
           Cargando horario de sincronización...
         </Text>
       )}
+      
+      <Text style={[styles.lastSyncText, isDarkMode && styles.darkText]}>
+        Última sincronización: {formatDate(lastSuccessfulSync)}
+      </Text>
       
       <TouchableOpacity
         style={[styles.syncButton, isDarkMode && styles.darkSyncButton]}
@@ -62,7 +85,13 @@ const styles = StyleSheet.create({
   syncTime: {
     fontSize: 14,
     color: '#7f8c8d',
+    marginBottom: 8, // Reduced to accommodate the last sync text
+  },
+  lastSyncText: {
+    fontSize: 13,
+    color: '#7f8c8d',
     marginBottom: 16,
+    fontStyle: 'italic',
   },
   syncButton: {
     backgroundColor: '#000',

@@ -1,8 +1,10 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
   initializeDataSync, 
   getStoredEvents, 
   getScheduledUpdateTime,
+  fetchAndSaveEvents,
   Evento 
 } from './DataSyncService';
 
@@ -12,6 +14,7 @@ interface DataSyncContextType {
   isLoading: boolean;
   refreshEvents: () => Promise<void>;
   scheduledSyncTime: { hour: number, minutes: number } | null;
+  lastSuccessfulSync: string | null;
 }
 
 // Create the context with a default value
@@ -19,7 +22,8 @@ export const DataSyncContext = createContext<DataSyncContextType>({
   events: [],
   isLoading: true,
   refreshEvents: async () => {},
-  scheduledSyncTime: null
+  scheduledSyncTime: null,
+  lastSuccessfulSync: null
 });
 
 // Create a hook for easy context use
@@ -35,6 +39,7 @@ export const DataSyncProvider: React.FC<DataSyncProviderProps> = ({ children }) 
   const [events, setEvents] = useState<Evento[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [scheduledSyncTime, setScheduledSyncTime] = useState<{ hour: number, minutes: number } | null>(null);
+  const [lastSuccessfulSync, setLastSuccessfulSync] = useState<string | null>(null);
 
   // Load events from AsyncStorage
   const loadEvents = async () => {
@@ -46,6 +51,10 @@ export const DataSyncProvider: React.FC<DataSyncProviderProps> = ({ children }) 
       // Load the scheduled sync time
       const time = await getScheduledUpdateTime();
       setScheduledSyncTime(time);
+      
+      // Load last successful sync date
+      const lastSyncDate = await AsyncStorage.getItem('last_successful_sync_date');
+      setLastSuccessfulSync(lastSyncDate);
     } catch (error) {
       console.error('Error loading events in context:', error);
     } finally {
@@ -55,7 +64,24 @@ export const DataSyncProvider: React.FC<DataSyncProviderProps> = ({ children }) 
 
   // Refresh events (can be called manually if needed)
   const refreshEvents = async () => {
-    await loadEvents();
+    setIsLoading(true);
+    try {
+      // Call fetchAndSaveEvents directly for manual refresh
+      const success = await fetchAndSaveEvents(); // This function now returns a boolean
+      if (success) {
+        // If fetch was successful, reload the events from storage
+        const storedEvents = await getStoredEvents();
+        setEvents(storedEvents);
+        
+        // Update the last successful sync date in state
+        const lastSyncDate = await AsyncStorage.getItem('last_successful_sync_date');
+        setLastSuccessfulSync(lastSyncDate);
+      }
+    } catch (error) {
+      console.error('Error refreshing events:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Initialize everything when the component mounts
@@ -74,7 +100,8 @@ export const DataSyncProvider: React.FC<DataSyncProviderProps> = ({ children }) 
         events,
         isLoading,
         refreshEvents,
-        scheduledSyncTime
+        scheduledSyncTime,
+        lastSuccessfulSync
       }}
     >
       {children}
