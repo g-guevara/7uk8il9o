@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "./ThemeContext";
 import { styles } from './styles/Config.styles';
-import DataSyncInfo from "./DataSyncInfo";
+import DataSyncInfo from "./DataProvider/DataSyncInfo";
 
 // Definir el tipo de datos que vienen de la API
 interface Evento {

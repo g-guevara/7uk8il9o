@@ -3,7 +3,7 @@ import { View, Text, TextInput, FlatList, TouchableOpacity, Alert, ActivityIndic
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from './styles/User.styles';
-import { useDataSync } from "./DataSyncContext";
+import { useDataSync } from "./DataProvider/DataSyncContext";
 
 // Definir el tipo de datos que vienen de la API
 interface Evento {

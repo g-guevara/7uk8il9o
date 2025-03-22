@@ -3,7 +3,7 @@ import { View, Text, TextInput } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from './styles/Search.styles';
-import { useDataSync } from "./DataSyncContext";
+import { useDataSync } from "./DataProvider/DataSyncContext";
 import { SearchResults } from "./SearchResults";
 import { SearchFilters } from "./SearchFilters";
 

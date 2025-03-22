@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { StatusBar, Platform } from "react-native";
 import { Stack } from "expo-router";
 import { ThemeProvider, useTheme } from "./ThemeContext";
-import { DataSyncProvider } from "./DataSyncContext";
+import { DataSyncProvider } from "./DataProvider/DataSyncContext";
 
 // Componente interno que usa el contexto de tema
 function StackNavigator() {
