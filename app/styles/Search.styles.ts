@@ -27,12 +27,11 @@ export const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: "row",
-    marginBottom: 24,
+    marginBottom: 12,
     borderRadius: 50,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#000000",
- 
   },
   darkSearchContainer: {
     borderColor: "#FFFfFF",
@@ -50,6 +49,29 @@ export const styles = StyleSheet.create({
     backgroundColor: "#1a1a1a",
     color: "#FFFFFF",
   },
+  // Filter section styles
+  filtersScrollView: {
+    flexGrow: 0,
+    marginBottom: 12,
+  },
+  filtersContainer: {
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+  },
+  filterDropdownContainer: {
+    marginRight: 16,
+  },
+  filterLabel: {
+    fontSize: 12,
+    color: "#7f8c8d",
+    marginBottom: 4,
+    marginLeft: 4,
+  },
+  chipScrollView: {
+    maxHeight: 40,
+  },
+  
+  // Search results styles
   searchButton: {
     backgroundColor: "#3498db",
     paddingHorizontal: 16,
@@ -82,7 +104,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   
-  // Nuevos estilos para el diseño de tarjeta
+  // Card event item styles
   cardEventItem: {
     backgroundColor: "#F2F2F7",
     marginBottom: 10,
@@ -90,8 +112,6 @@ export const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     borderColor: "#F2F2F7",
-
-   
   },
   darkCardEventItem: {
     backgroundColor: "#2C2C2E",
@@ -125,7 +145,6 @@ export const styles = StyleSheet.create({
     paddingVertical: 1,
     marginTop: 2,
     paddingHorizontal:12,
-
   },
   darkRoomNumberContainer: {
     marginTop: 2,
@@ -151,7 +170,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#ddd",
-
     elevation: 1,
   },
   darkEventItem: {
