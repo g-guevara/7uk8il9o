@@ -5,6 +5,17 @@ import { useNavigation } from "@react-navigation/native";
 import { styles } from './styles/User.styles';
 import { useDataSync } from "./DataProvider/DataSyncContext";
 
+// Función para obtener el día de la semana a partir de la fecha
+const obtenerDiaSemana = (fechaStr: string): string => {
+  try {
+    const fecha = new Date(fechaStr);
+    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    return diasSemana[fecha.getDay()];
+  } catch (error) {
+    return ''; // En caso de error, devolver cadena vacía
+  }
+};
+
 // Definir el tipo de datos que vienen de la API
 interface Evento {
   _id: string;
@@ -17,6 +28,7 @@ interface Evento {
   Edificio: string;
   Campus: string;
   fechaActualizacion: string;
+  diaSemana?: string; // Campo opcional, podría venir de la API
 }
 
 const User = () => {
@@ -181,7 +193,7 @@ const User = () => {
                 </View>
                 
                 <Text style={[styles.eventDetails, isDarkMode && styles.darkEventDetails]}>
-                  {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
+                  {item.diaSemana || obtenerDiaSemana(item.Fecha)}, {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
                 </Text>
 
               </View>
