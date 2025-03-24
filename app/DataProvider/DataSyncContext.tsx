@@ -4,9 +4,9 @@ import {
   initializeDataSync, 
   getStoredEvents, 
   getScheduledUpdateTime,
-  fetchAndSaveEvents,
-  Evento 
+  fetchAndSaveEvents
 } from './DataSyncService';
+import { Evento } from './DataSyncTypes';
 
 // Define the type for our context
 interface DataSyncContextType {
@@ -109,7 +109,7 @@ export const DataSyncProvider: React.FC<DataSyncProviderProps> = ({ children }) 
   );
 };
 
-// Añadir export default para resolver el warning
+// Export default object
 const DataSyncContextExports = {
   DataSyncContext,
   useDataSync,

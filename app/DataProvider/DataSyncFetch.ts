@@ -47,7 +47,7 @@ export const fetchAndSaveEvents = async (): Promise<boolean> => {
  */
 function processEventsData(eventsData: Evento[]): Evento[] {
   return eventsData.map(event => {
-    if (!event.diaSemana) {
+    if (!event.diaSemana && event.Fecha) {
       try {
         const fecha = new Date(event.Fecha);
         const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
