@@ -108,3 +108,12 @@ export const DataSyncProvider: React.FC<DataSyncProviderProps> = ({ children }) 
     </DataSyncContext.Provider>
   );
 };
+
+// Añadir export default para resolver el warning
+const DataSyncContextExports = {
+  DataSyncContext,
+  useDataSync,
+  DataSyncProvider
+};
+
+export default DataSyncContextExports;

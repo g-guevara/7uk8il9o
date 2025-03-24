@@ -97,6 +97,8 @@ const Config = () => {
         </View>
       </View>
       
+      {/* Añadir componente DataSyncInfo */}
+      <DataSyncInfo isDarkMode={isDarkMode} />
 
       <View style={styles.eventsSection}>
         <View style={styles.eventsSectionHeader}>

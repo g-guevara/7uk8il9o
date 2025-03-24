@@ -12,6 +12,7 @@ const obtenerDiaSemana = (fechaStr: string): string => {
     const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     return diasSemana[fecha.getDay()];
   } catch (error) {
+    console.error("Error al obtener día de la semana:", error);
     return ''; // En caso de error, devolver cadena vacía
   }
 };
@@ -37,6 +38,7 @@ const User = () => {
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const navigation = useNavigation();
+  const [totalCount, setTotalCount] = useState(0);
   
   // Use the DataSyncContext to access stored events
   const { events, isLoading: isSyncLoading } = useDataSync();
@@ -51,25 +53,52 @@ const User = () => {
     loadThemePreference();
   }, []);
   
+  // Log cuando los eventos cambian para debugging
+  useEffect(() => {
+    if (events.length > 0) {
+      console.log(`DataSync proporcionó ${events.length} eventos totales`);
+      setTotalCount(events.length);
+    }
+  }, [events]);
+  
   // Update filtered events when events or search text changes
   useEffect(() => {
     if (events.length > 0) {
-      if (searchText === "") {
+      setIsLocalLoading(true);
+      try {
+        if (searchText.trim() === "") {
+          // Mostrar todos los eventos sin filtrar
+          setFilteredEventos(events);
+        } else {
+          const searchTermNormalized = searchText.toLowerCase().trim();
+          
+          const results = events.filter(evento => {
+            // Normalizar todos los campos para la búsqueda
+            const eventoText = evento.Evento?.toLowerCase() || "";
+            const tipoText = evento.Tipo?.toLowerCase() || "";
+            const fechaText = evento.Fecha?.toLowerCase() || "";
+            const salaText = evento.Sala?.toLowerCase() || "";
+            const edificioText = evento.Edificio?.toLowerCase() || "";
+            const campusText = evento.Campus?.toLowerCase() || "";
+            
+            // Comprobar si algún campo contiene el término de búsqueda
+            return eventoText.includes(searchTermNormalized) ||
+                   tipoText.includes(searchTermNormalized) ||
+                   fechaText.includes(searchTermNormalized) ||
+                   salaText.includes(searchTermNormalized) ||
+                   edificioText.includes(searchTermNormalized) ||
+                   campusText.includes(searchTermNormalized);
+          });
+          
+          setFilteredEventos(results);
+        }
+      } catch (error) {
+        console.error("Error al filtrar eventos:", error);
+        // En caso de error, mostrar todos los eventos
         setFilteredEventos(events);
-      } else {
-        const searchTerm = searchText.toLowerCase();
-        const results = events.filter(evento => 
-          evento.Evento.toLowerCase().includes(searchTerm) ||
-          evento.Tipo.toLowerCase().includes(searchTerm) ||
-          evento.Fecha.toLowerCase().includes(searchTerm) ||
-          evento.Sala.toLowerCase().includes(searchTerm) ||
-          evento.Edificio.toLowerCase().includes(searchTerm) ||
-          evento.Campus.toLowerCase().includes(searchTerm)
-        );
-        
-        setFilteredEventos(results);
+      } finally {
+        setIsLocalLoading(false);
       }
-      setIsLocalLoading(false);
     }
   }, [searchText, events]);
 
@@ -133,6 +162,40 @@ const User = () => {
     return selectedEventos.some(e => e._id === evento._id);
   };
 
+  // Renderizar cada elemento de la lista de eventos
+  const renderEventItem = ({ item }: { item: Evento }) => {
+    // Asegurarse de que el día de la semana se muestre correctamente
+    const diaSemana = item.diaSemana || obtenerDiaSemana(item.Fecha);
+    
+    return (
+      <TouchableOpacity
+        style={[
+          styles.eventItem,
+          isDarkMode && styles.darkEventItem,
+          isEventoSelected(item) && (isDarkMode ? styles.darkSelectedEventItem : styles.selectedEventItem)
+        ]}
+        onPress={() => toggleEventoSelection(item)}
+      >
+        <View style={styles.eventContent}>
+          <View style={styles.eventHeader}>
+            <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
+              {item.Evento}
+            </Text>
+          </View>
+          
+          <Text style={[styles.eventDetails, isDarkMode && styles.darkEventDetails]}>
+            {diaSemana}, {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
+          </Text>
+        </View>
+        
+        {isEventoSelected(item) && (
+          <View style={[styles.selectionIndicator, isDarkMode && styles.darkSelectionIndicator]}>
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <View style={[styles.container, isDarkMode && styles.darkContainer]}>
       <View style={[styles.searchContainer, isDarkMode && styles.darkSearchContainer]}>
@@ -160,6 +223,11 @@ const User = () => {
           data={filteredEventos}
           keyExtractor={(item) => item._id}
           style={styles.eventList}
+          renderItem={renderEventItem}
+          initialNumToRender={20}
+          maxToRenderPerBatch={20}
+          windowSize={10}
+          removeClippedSubviews={true}
           ListEmptyComponent={
             !isLoading && filteredEventos.length === 0 ? (
               <View style={styles.noResultsContainer}>
@@ -172,38 +240,11 @@ const User = () => {
           ListHeaderComponent={
             filteredEventos.length > 0 ? (
               <Text style={[styles.resultsCount, isDarkMode && styles.darkText]}>
-                {filteredEventos.length} resultado{filteredEventos.length !== 1 ? "s" : ""} encontrado{filteredEventos.length !== 1 ? "s" : ""}
+                {filteredEventos.length} resultado{filteredEventos.length !== 1 ? "s" : ""} encontrado{filteredEventos.length !== 1 ? "s" : ""} 
+                {totalCount > 0 ? ` (de ${totalCount} totales)` : ''}
               </Text>
             ) : null
           }
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.eventItem,
-                isDarkMode && styles.darkEventItem,
-                isEventoSelected(item) && (isDarkMode ? styles.darkSelectedEventItem : styles.selectedEventItem)
-              ]}
-              onPress={() => toggleEventoSelection(item)}
-            >
-              <View style={styles.eventContent}>
-                <View style={styles.eventHeader}>
-                  <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
-                    {item.Evento}
-                  </Text>
-                </View>
-                
-                <Text style={[styles.eventDetails, isDarkMode && styles.darkEventDetails]}>
-                  {item.diaSemana || obtenerDiaSemana(item.Fecha)}, {item.Campus}, {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
-                </Text>
-
-              </View>
-              
-              {isEventoSelected(item) && (
-                <View style={[styles.selectionIndicator, isDarkMode && styles.darkSelectionIndicator]}>
-                </View>
-              )}
-            </TouchableOpacity>
-          )}
         />
       )}
       

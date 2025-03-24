@@ -12,6 +12,7 @@ export interface Evento {
   Edificio: string;
   Campus: string;
   fechaActualizacion: string;
+  diaSemana?: string;
 }
 
 const API_BASE_URL = 'https://7uk8il9o.vercel.app';
@@ -112,19 +113,32 @@ const fetchAndSaveEvents = async (): Promise<boolean> => {
     const attemptDate = new Date().toISOString();
     await AsyncStorage.setItem(STORAGE_KEYS.SYNC_ATTEMPT_DATE, attemptDate);
     
-    // Fetch events from the 'eventos' collection
-    const eventsResponse = await fetch(`${API_BASE_URL}/eventos`);
+    console.log('Iniciando fetch de all_eventos...');
+    // Fetch events from the 'all_eventos' collection
+    const eventsResponse = await fetch(`${API_BASE_URL}/all_eventos`);
     if (!eventsResponse.ok) {
       throw new Error(`HTTP error! Status: ${eventsResponse.status}`);
     }
+    
     const eventsData: Evento[] = await eventsResponse.json();
+    console.log(`Recibidos ${eventsData.length} eventos del servidor`);
+    
+    // Process events if needed - añadir día de semana si no existe
+    const processedEvents = eventsData.map(event => {
+      if (!event.diaSemana) {
+        try {
+          const fecha = new Date(event.Fecha);
+          const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+          event.diaSemana = diasSemana[fecha.getDay()];
+        } catch (error) {
+          console.warn(`Error procesando fecha para evento ${event._id}:`, error);
+        }
+      }
+      return event;
+    });
     
     // Save events data to AsyncStorage
-    await AsyncStorage.setItem(STORAGE_KEYS.EVENTS_DATA, JSON.stringify(eventsData));
-    
-    // TODO: Add endpoint for 'all_events' collection once it's available
-    // For now, we'll just log this as a placeholder
-    console.log('Note: Endpoint for all_events collection not implemented yet');
+    await AsyncStorage.setItem(STORAGE_KEYS.EVENTS_DATA, JSON.stringify(processedEvents));
     
     // Update last sync date
     const currentDate = new Date().toISOString();
@@ -289,7 +303,16 @@ const initializeDataSync = async (): Promise<void> => {
 const getStoredEvents = async (): Promise<Evento[]> => {
   try {
     const data = await AsyncStorage.getItem(STORAGE_KEYS.EVENTS_DATA);
-    return data ? JSON.parse(data) : [];
+    if (!data) {
+      console.log('No hay datos en AsyncStorage, intentando obtenerlos del servidor...');
+      await fetchAndSaveEvents();
+      const freshData = await AsyncStorage.getItem(STORAGE_KEYS.EVENTS_DATA);
+      return freshData ? JSON.parse(freshData) : [];
+    }
+    
+    const events = JSON.parse(data);
+    console.log(`Recuperados ${events.length} eventos de AsyncStorage`);
+    return events;
   } catch (error) {
     console.error('Error getting stored events:', error);
     return [];
@@ -297,7 +320,6 @@ const getStoredEvents = async (): Promise<Evento[]> => {
 };
 
 // Export the functions for use in other components
-// Fixed: removed Evento from here since it's already exported as an interface above
 export {
   initializeDataSync,
   getStoredEvents,
