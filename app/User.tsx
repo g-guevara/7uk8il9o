@@ -199,14 +199,6 @@ const User = () => {
         <Text style={[styles.selectedCount, isDarkMode && styles.darkSelectedCount]}>
           {selectedEventos.length} eventos seleccionados
         </Text>
-        <TouchableOpacity
-          style={[styles.configButton, isDarkMode && styles.darkConfigButton]}
-          onPress={() => navigation.navigate("Config" as never)}
-        >
-          <Text style={[styles.configButtonText, isDarkMode && styles.darkConfigButtonText]}>
-            Ver seleccionados
-          </Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
