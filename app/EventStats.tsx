@@ -12,6 +12,7 @@ import {
   parseTime,
   CARD_COLORS 
 } from "./EventStatsHelpers";
+import { useDataSync } from "./DataProvider/DataSyncContext";
 
 interface EventStatsProps {
   isDarkMode: boolean;
@@ -27,6 +28,10 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
   // Keep track of scroll position
   const scrollY = useRef(new Animated.Value(0)).current;
   
+  // Get the current date for filtering today's events
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+  
   // Function to load selected events from AsyncStorage
   const loadSelectedEvents = async () => {
     try {
@@ -34,10 +39,19 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
       const jsonValue = await AsyncStorage.getItem("selectedEventos");
       if (jsonValue !== null) {
         const events: Evento[] = JSON.parse(jsonValue);
-        setSelectedEvents(events);
+        
+        // Filter events for today
+        const todaysEvents = events.filter(event => {
+          // Some events might have date in a different format, handle that
+          const eventDate = new Date(event.Fecha);
+          const eventDateStr = eventDate.toISOString().split('T')[0];
+          return eventDateStr === todayStr;
+        });
+        
+        setSelectedEvents(events); // Keep all selected events
         
         // Group events with the same name that occur within 2 hours of each other
-        const groupedEvents = groupSimilarEvents(events);
+        const groupedEvents = groupSimilarEvents(todaysEvents);
         
         // Transform the events to the card format
         const transformedEvents = transformEventsToCardFormat(groupedEvents);
@@ -135,7 +149,7 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
         <View style={{ height: 110 }} />
         <View style={styles.noEventsContainer}>
           <Text style={[styles.noEventsText, isDarkMode && styles.darkText]}>
-            No tienes eventos seleccionados.
+            No tienes eventos para hoy.
           </Text>
           <TouchableOpacity
             style={styles.addEventsButton}
@@ -165,7 +179,6 @@ const EventStats: React.FC<EventStatsProps> = ({ isDarkMode, navigation }) => {
           <React.Fragment key={`event-block-${event.id}`}>
             {/* Cambiado de TouchableOpacity a View para eliminar el efecto de botón */}
             <View
-              key={event.id}
               style={[
                 styles.eventCard,
                 { backgroundColor: event.color }
