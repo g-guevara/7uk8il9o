@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
   },
   searchContainer: {
     flexDirection: "row",
-    marginBottom: 24,
+    marginBottom: 12, // Reduced to make space for filters
     borderRadius: 50, // Rounded search bar like Search
     overflow: "hidden",
     borderWidth: 1,
@@ -200,5 +200,27 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: "#333",
     textAlign: "center",
+  },
+  
+  // Filter styles (added from Search.styles.ts)
+  filtersScrollView: {
+    flexGrow: 0,
+    marginBottom: 12,
+  },
+  filtersContainer: {
+    paddingHorizontal: 4,
+    paddingVertical: 8,
+  },
+  filterDropdownContainer: {
+    marginRight: 16,
+  },
+  filterLabel: {
+    fontSize: 12,
+    color: "#7f8c8d",
+    marginBottom: 4,
+    marginLeft: 4,
+  },
+  chipScrollView: {
+    maxHeight: 40,
   },
 });
