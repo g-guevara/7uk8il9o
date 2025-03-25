@@ -61,6 +61,9 @@ export const fetchAndSaveEvents = async (): Promise<boolean> => {
 /**
  * Fetch all events from the API (all_eventos collection) and save them locally
  */
+/**
+ * Fetch all events from the API (all_eventos collection) and save them locally
+ */
 export const fetchAndSaveAllEvents = async (): Promise<boolean> => {
   try {
     console.log('Iniciando fetch de all_eventos...');
@@ -101,3 +104,4 @@ export const fetchAllData = async (): Promise<boolean> => {
     return false;
   }
 };
+

@@ -24,6 +24,9 @@ export const getStoredEvents = async (): Promise<Evento[]> => {
 /**
  * Get stored all events from AsyncStorage (all_eventos collection)
  */
+/**
+ * Get stored all events from AsyncStorage (all_eventos collection)
+ */
 export const getStoredAllEvents = async (): Promise<Evento[]> => {
   try {
     const allEventsJson = await AsyncStorage.getItem(STORAGE_KEYS.ALL_EVENTS_DATA);

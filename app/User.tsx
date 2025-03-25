@@ -83,83 +83,82 @@ const User = () => {
     }
   }, [allEvents]);
   
-  // Función para normalizar texto (eliminar tildes y convertir a minúsculas)
-  const normalizeText = (text: string): string => {
-    return text.toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos/tildes
-      .replace(/[^\w\s]/gi, ''); // Eliminar caracteres especiales
-  };
-  
+// Función para normalizar texto (eliminar tildes y convertir a minúsculas)
+// Función para normalizar texto segura contra undefined/null
+const normalizeText = (text: string | undefined | null): string => {
+  if (text === undefined || text === null) {
+    return ''; // Devuelve cadena vacía para valores undefined o null
+  }
+  return text.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Eliminar acentos/tildes
+    .replace(/[^\w\s]/gi, ''); // Eliminar caracteres especiales
+};
   // Update filtered events when events or search text changes
-  useEffect(() => {
-    if (allEvents.length > 0) {
-      setIsLocalLoading(true);
-      try {
-        // First apply text search filtering
-        let results = [...allEvents];
+// Update filtered events when events or search text changes
+useEffect(() => {
+  if (allEvents.length > 0) {
+    setIsLocalLoading(true);
+    try {
+      // First apply text search filtering
+      let results = [...allEvents];
+      
+      if (searchText.trim() !== "") {
+        const searchTerms = normalizeText(searchText).split(' ').filter(term => term.length > 0);
         
-        if (searchText.trim() !== "") {
-          const searchTerms = normalizeText(searchText).split(' ').filter(term => term.length > 0);
+        results = allEvents.filter(evento => {
+          // Normaliza todos los campos de búsqueda
+          const normalizedEvento = normalizeText(evento.Evento);
+          const normalizedTipo = normalizeText(evento.Tipo);
+          const normalizedFecha = normalizeText(evento.Fecha);
+          const normalizedInicio = normalizeText(evento.Inicio);
+          const normalizedFin = normalizeText(evento.Fin);
+          const normalizedSala = normalizeText(evento.Sala);
+          const normalizedEdificio = normalizeText(evento.Edificio);
+          const normalizedCampus = normalizeText(evento.Campus);
           
-          results = allEvents.filter(evento => {
-            // Normaliza todos los campos de búsqueda
-            const normalizedEvento = normalizeText(evento.Evento);
-            const normalizedTipo = normalizeText(evento.Tipo);
-            const normalizedFecha = normalizeText(evento.Fecha);
-            const normalizedInicio = normalizeText(evento.Inicio);
-            const normalizedFin = normalizeText(evento.Fin);
-            const normalizedSala = normalizeText(evento.Sala);
-            const normalizedEdificio = normalizeText(evento.Edificio);
-            const normalizedCampus = normalizeText(evento.Campus);
-            
-            // Verifica que TODOS los términos de búsqueda estén presentes en al menos uno de los campos
-            return searchTerms.every(term => 
-              normalizedEvento.includes(term) ||
-              normalizedTipo.includes(term) ||
-              normalizedFecha.includes(term) ||
-              normalizedInicio.includes(term) ||
-              normalizedFin.includes(term) ||
-              normalizedSala.includes(term) ||
-              normalizedEdificio.includes(term) ||
-              normalizedCampus.includes(term)
-            );
-          });
-        }
-        
-        // Then apply filters
-        // Apply campus filter
-        if (selectedCampus) {
-          results = results.filter(event => event.Campus === selectedCampus);
-        }
-        
-        // Apply type filter
-        if (selectedType) {
-          results = results.filter(event => event.Tipo === selectedType);
-        }
-        
-        // Apply sorting
-        if (sortMethod === 'alphabetical') {
-          results = results.sort((a, b) => a.Evento.localeCompare(b.Evento));
-        } else if (sortMethod === 'chronological') {
-          results = results.sort((a, b) => {
-            const dateTimeA = `${a.Fecha}T${a.Inicio}`;
-            const dateTimeB = `${b.Fecha}T${b.Inicio}`;
-            return dateTimeA.localeCompare(dateTimeB);
-          });
-        }
-        
-        setFilteredEventos(results);
-      } catch (error) {
-        console.error("Error al filtrar eventos:", error);
-        // En caso de error, mostrar todos los eventos
-        setFilteredEventos(allEvents);
-      } finally {
-        setIsLocalLoading(false);
+          // Verifica que TODOS los términos de búsqueda estén presentes en al menos uno de los campos
+          return searchTerms.every(term => 
+            normalizedEvento.includes(term) ||
+            normalizedTipo.includes(term) ||
+            normalizedFecha.includes(term) ||
+            normalizedInicio.includes(term) ||
+            normalizedFin.includes(term) ||
+            normalizedSala.includes(term) ||
+            normalizedEdificio.includes(term) ||
+            normalizedCampus.includes(term)
+          );
+        });
       }
+      
+      // Luego aplica los filtros
+      if (selectedCampus) {
+        results = results.filter(event => event.Campus === selectedCampus);
+      }
+      
+      if (selectedType) {
+        results = results.filter(event => event.Tipo === selectedType);
+      }
+      
+      if (sortMethod === 'alphabetical') {
+        results = results.sort((a, b) => a.Evento.localeCompare(b.Evento));
+      } else if (sortMethod === 'chronological') {
+        results = results.sort((a, b) => {
+          const dateTimeA = `${a.Fecha}T${a.Inicio}`;
+          const dateTimeB = `${b.Fecha}T${b.Inicio}`;
+          return dateTimeA.localeCompare(dateTimeB);
+        });
+      }
+      
+      setFilteredEventos(results);
+    } catch (error) {
+      console.error("Error al filtrar eventos:", error);
+      setFilteredEventos(allEvents);
+    } finally {
+      setIsLocalLoading(false);
     }
-  }, [searchText, allEvents, selectedCampus, selectedType, sortMethod]);
-
+  }
+}, [searchText, allEvents, selectedCampus, selectedType, sortMethod]);
   // Cargar eventos seleccionados desde AsyncStorage
   const loadSelectedEventos = async () => {
     try {
