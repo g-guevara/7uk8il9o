@@ -78,7 +78,9 @@ export const getScheduledUpdateTime = async (): Promise<{ hour: number, minutes:
 };
 
 /**
- * Check sync times and determine if sync is needed
+ * Helper function to check sync timing
+ * This function is now a placeholder to maintain compatibility
+ * The actual implementation has been moved to DataSyncService.ts
  */
 export const checkSyncTimes = async (
   lastSuccessfulSyncDate: Date | null,
@@ -89,48 +91,7 @@ export const checkSyncTimes = async (
   currentHour: number,
   currentMinutes: number
 ): Promise<void> => {
-  if (lastSuccessfulSyncDate) {
-    // Get just the date part (year, month, day)
-    const lastSuccessfulSyncDay = new Date(
-      lastSuccessfulSyncDate.getFullYear(), 
-      lastSuccessfulSyncDate.getMonth(), 
-      lastSuccessfulSyncDate.getDate()
-    );
-    
-    // Calculate the expected next sync day (adding 1 day to last successful sync)
-    const expectedNextSyncDay = new Date(lastSuccessfulSyncDay);
-    expectedNextSyncDay.setDate(expectedNextSyncDay.getDate() + 1);
-    
-    // If current date is after the expected next sync day, we missed at least one sync
-    if (nowDate > expectedNextSyncDay) {
-      console.log('Missed scheduled sync due to device being off, syncing now');
-      await fetchAndSaveEvents();
-      return;
-    }
-    
-    // If it's the same day as expected next sync but after scheduled time
-    if (nowDate.getTime() === expectedNextSyncDay.getTime() && 
-        (currentHour > hour || (currentHour === hour && currentMinutes > minutes))) {
-      console.log('On sync day and scheduled time has passed, syncing now');
-      await fetchAndSaveEvents();
-      return;
-    }
-  }
-  
-  // Standard check if we missed the sync time today
-  if (lastSyncDateStr) {
-    const lastSyncDate = new Date(lastSyncDateStr);
-    const lastSyncDay = new Date(
-      lastSyncDate.getFullYear(), 
-      lastSyncDate.getMonth(), 
-      lastSyncDate.getDate()
-    );
-    
-    // If the last sync was before today and the scheduled time has already passed today, sync now
-    if (lastSyncDay < nowDate && 
-        (currentHour > hour || (currentHour === hour && currentMinutes > minutes))) {
-      console.log('Missed scheduled sync for today, doing it now');
-      await fetchAndSaveEvents();
-    }
-  }
+  // Implementation moved to checkExpectedNextSync and checkMissedSyncToday in DataSyncService.ts
+  console.log('Checking sync times...');
+  // This is a placeholder to maintain the function signature
 };
