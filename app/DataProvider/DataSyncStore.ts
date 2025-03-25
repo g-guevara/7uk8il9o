@@ -6,7 +6,7 @@ import { Evento } from './DataSyncTypes';
 const SELECTED_EVENTS_KEY = 'selectedEventos';
 
 /**
- * Get stored events from AsyncStorage
+ * Get stored events from AsyncStorage (eventos collection)
  */
 export const getStoredEvents = async (): Promise<Evento[]> => {
   try {
@@ -17,6 +17,22 @@ export const getStoredEvents = async (): Promise<Evento[]> => {
     return [];
   } catch (error) {
     console.error('Error getting stored events:', error);
+    return [];
+  }
+};
+
+/**
+ * Get stored all events from AsyncStorage (all_eventos collection)
+ */
+export const getStoredAllEvents = async (): Promise<Evento[]> => {
+  try {
+    const allEventsJson = await AsyncStorage.getItem(STORAGE_KEYS.ALL_EVENTS_DATA);
+    if (allEventsJson) {
+      return JSON.parse(allEventsJson);
+    }
+    return [];
+  } catch (error) {
+    console.error('Error getting stored all events:', error);
     return [];
   }
 };
@@ -105,6 +121,7 @@ export const removeSelectedEvent = async (eventId: string): Promise<boolean> => 
 export const clearSyncData = async (): Promise<boolean> => {
   try {
     await AsyncStorage.removeItem(STORAGE_KEYS.EVENTS_DATA);
+    await AsyncStorage.removeItem(STORAGE_KEYS.ALL_EVENTS_DATA);
     await AsyncStorage.removeItem(STORAGE_KEYS.LAST_SYNC_DATE);
     await AsyncStorage.removeItem(STORAGE_KEYS.LAST_SUCCESSFUL_SYNC_DATE);
     await AsyncStorage.removeItem(STORAGE_KEYS.SYNC_ATTEMPT_DATE);

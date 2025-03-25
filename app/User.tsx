@@ -40,8 +40,8 @@ const User = () => {
   const navigation = useNavigation();
   const [totalCount, setTotalCount] = useState(0);
   
-  // Use the DataSyncContext to access stored events
-  const { events, isLoading: isSyncLoading } = useDataSync();
+  // Use the DataSyncContext to access stored all_eventos data
+  const { allEvents, isLoading: isSyncLoading } = useDataSync();
   const [isLocalLoading, setIsLocalLoading] = useState(true);
   
   // Combined loading state
@@ -55,24 +55,24 @@ const User = () => {
   
   // Log cuando los eventos cambian para debugging
   useEffect(() => {
-    if (events.length > 0) {
-      console.log(`DataSync proporcionó ${events.length} eventos totales`);
-      setTotalCount(events.length);
+    if (allEvents.length > 0) {
+      console.log(`DataSync proporcionó ${allEvents.length} all_eventos totales`);
+      setTotalCount(allEvents.length);
     }
-  }, [events]);
+  }, [allEvents]);
   
   // Update filtered events when events or search text changes
   useEffect(() => {
-    if (events.length > 0) {
+    if (allEvents.length > 0) {
       setIsLocalLoading(true);
       try {
         if (searchText.trim() === "") {
           // Mostrar todos los eventos sin filtrar
-          setFilteredEventos(events);
+          setFilteredEventos(allEvents);
         } else {
           const searchTermNormalized = searchText.toLowerCase().trim();
           
-          const results = events.filter(evento => {
+          const results = allEvents.filter(evento => {
             // Normalizar todos los campos para la búsqueda
             const eventoText = evento.Evento?.toLowerCase() || "";
             const tipoText = evento.Tipo?.toLowerCase() || "";
@@ -95,12 +95,12 @@ const User = () => {
       } catch (error) {
         console.error("Error al filtrar eventos:", error);
         // En caso de error, mostrar todos los eventos
-        setFilteredEventos(events);
+        setFilteredEventos(allEvents);
       } finally {
         setIsLocalLoading(false);
       }
     }
-  }, [searchText, events]);
+  }, [searchText, allEvents]);
 
   // Cargar eventos seleccionados desde AsyncStorage
   const loadSelectedEventos = async () => {

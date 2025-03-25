@@ -1,15 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEYS, API_BASE_URL } from './DataSyncConstants';
-import { Evento } from './DataSyncTypes';
+import { STORAGE_KEYS } from './DataSyncConstants';
 import { 
   getScheduledUpdateTime, 
   setupRandomTimeValues, 
   checkFirstLaunch, 
-  setFirstLaunchComplete,
-  checkSyncTimes
+  setFirstLaunchComplete
 } from './DataSyncTime';
-import { processEventsData, fetchAndSaveEvents } from './DataSyncEvents';
-import { getStoredEvents } from './DataSyncStore';
+import { fetchAndSaveEvents, fetchAndSaveAllEvents, fetchAllData } from './DataSyncFetch';
+import { getStoredEvents, getStoredAllEvents } from './DataSyncStore';
 
 /**
  * Initialize data synchronization
@@ -23,8 +21,8 @@ export const initializeDataSync = async (): Promise<void> => {
       console.log('First launch detected, initializing data sync...');
       // Set up random time for updates
       await setupRandomTimeValues();
-      // Perform initial data fetch
-      await fetchAndSaveEvents();
+      // Perform initial data fetch (both collections)
+      await fetchAllData();
       // Mark first launch as complete
       await setFirstLaunchComplete();
     } else {
@@ -48,7 +46,7 @@ export const checkForMissedSyncs = async (): Promise<void> => {
     // or there might have been a problem with previous syncs
     if (!lastSuccessfulSyncStr) {
       console.log('No successful sync record found, performing sync');
-      await fetchAndSaveEvents();
+      await fetchAllData();
       return;
     }
     
@@ -61,7 +59,7 @@ export const checkForMissedSyncs = async (): Promise<void> => {
     // If more than 1 day has passed since the last successful sync
     if (daysDifference > 1) {
       console.log(`${daysDifference} days since last successful sync, performing catch-up sync`);
-      await fetchAndSaveEvents();
+      await fetchAllData();
     }
     
     // Perform regular check for today's sync
@@ -69,7 +67,7 @@ export const checkForMissedSyncs = async (): Promise<void> => {
   } catch (error) {
     console.error('Error checking for missed syncs:', error);
     // Try to sync anyway in case of error
-    await fetchAndSaveEvents();
+    await fetchAllData();
   }
 };
 
@@ -108,7 +106,7 @@ export const handleSyncTiming = async (
   // If it's the first time or we're at the scheduled time, sync the data
   if (!lastSyncDateStr || (currentHour === hour && currentMinutes === minutes)) {
     console.log('Time to sync data!');
-    await fetchAndSaveEvents();
+    await fetchAllData();
     return;
   }
   
@@ -135,7 +133,7 @@ async function checkPreviousSyncStatus(
   // Check for failed previous attempts
   if (lastSyncDateStr && !lastSuccessfulSyncDateStr) {
     console.log('Previous sync attempt detected but no successful sync record, trying again');
-    await fetchAndSaveEvents();
+    await fetchAllData();
     return;
   }
   
@@ -174,7 +172,7 @@ async function checkExpectedNextSync(
   // If current date is after the expected next sync day, we missed at least one sync
   if (nowDate > expectedNextSyncDay) {
     console.log('Missed scheduled sync due to device being off, syncing now');
-    await fetchAndSaveEvents();
+    await fetchAllData();
     return;
   }
   
@@ -182,7 +180,7 @@ async function checkExpectedNextSync(
   if (nowDate.getTime() === expectedNextSyncDay.getTime() && 
       (currentHour > hour || (currentHour === hour && currentMinutes > minutes))) {
     console.log('On sync day and scheduled time has passed, syncing now');
-    await fetchAndSaveEvents();
+    await fetchAllData();
   }
 }
 
@@ -208,13 +206,16 @@ async function checkMissedSyncToday(
   if (lastSyncDay < nowDate && 
       (currentHour > hour || (currentHour === hour && currentMinutes > minutes))) {
     console.log('Missed scheduled sync for today, doing it now');
-    await fetchAndSaveEvents();
+    await fetchAllData();
   }
 }
 
-// Export important functions from other modules for backward compatibility
+// Export important functions
 export { 
   getScheduledUpdateTime,
   getStoredEvents,
-  fetchAndSaveEvents
+  getStoredAllEvents,
+  fetchAndSaveEvents,
+  fetchAndSaveAllEvents,
+  fetchAllData
 };
