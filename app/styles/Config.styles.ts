@@ -93,6 +93,10 @@ export const styles = StyleSheet.create({
     marginBottom: 2,
     fontStyle: "italic",
   },
+  dayOfWeek: {
+    fontWeight: "500", // Make the day of week slightly bolder
+    fontStyle: "italic",
+  },
   eventLocation: {
     fontSize: 14,
     color: "#95a5a6",

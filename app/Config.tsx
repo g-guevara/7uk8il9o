@@ -18,7 +18,20 @@ interface Evento {
   Edificio: string;
   Campus: string;
   fechaActualizacion: string;
+  diaSemana?: string;
 }
+
+// Función para obtener el día de la semana a partir de la fecha
+const obtenerDiaSemana = (fechaStr: string): string => {
+  try {
+    const fecha = new Date(fechaStr);
+    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    return diasSemana[fecha.getDay()];
+  } catch (error) {
+    console.error("Error al obtener día de la semana:", error);
+    return ''; // En caso de error, devolver cadena vacía
+  }
+};
 
 const Config = () => {
   const [selectedEventos, setSelectedEventos] = useState<Evento[]>([]);
@@ -130,27 +143,33 @@ const Config = () => {
             data={selectedEventos}
             keyExtractor={(item) => item._id}
             style={styles.eventsList}
-            renderItem={({ item }) => (
-              <View style={[styles.eventItem, isDarkMode && styles.darkEventItem]}>
-                <View style={styles.eventContent}>
-                  <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
-                    {item.Evento}
-                  </Text>
-                  <Text style={[styles.eventDetails, isDarkMode && styles.darkSubText]}>
-                    {item.Fecha} • {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
-                  </Text>
-                  <Text style={[styles.eventLocation, isDarkMode && styles.darkSubText]}>
-                    {item.Sala}, {item.Campus}
-                  </Text>
+            renderItem={({ item }) => {
+              // Obtener el día de la semana, ya sea del objeto o calculándolo desde la fecha
+              const diaSemana = item.diaSemana || obtenerDiaSemana(item.Fecha);
+              
+              return (
+                <View style={[styles.eventItem, isDarkMode && styles.darkEventItem]}>
+                  <View style={styles.eventContent}>
+                    <Text style={[styles.eventTitle, isDarkMode && styles.darkText]}>
+                      {item.Evento}
+                    </Text>
+                    <Text style={[styles.eventDetails, isDarkMode && styles.darkSubText]}>
+                      <Text style={[styles.dayOfWeek, isDarkMode && styles.darkSubText]}>
+                        {diaSemana}
+                      </Text>
+                      {' • '}  {item.Inicio.substring(0, 5)} - {item.Fin.substring(0, 5)}
+                    </Text>
+
+                  </View>
+                  <TouchableOpacity
+                    style={styles.removeButton}
+                    onPress={() => removeEvento(item)}
+                  >
+                    <Text style={styles.removeButtonText}>×</Text>
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  style={styles.removeButton}
-                  onPress={() => removeEvento(item)}
-                >
-                  <Text style={styles.removeButtonText}>×</Text>
-                </TouchableOpacity>
-              </View>
-            )}
+              );
+            }}
           />
         )}
       </View>
