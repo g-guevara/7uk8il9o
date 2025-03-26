@@ -44,17 +44,43 @@ export const calculateTimeGaps = (events: EventCardData[]): TimeGap[] => {
 /**
  * Filter events for today
  */
+/**
+ * Filter events for today based on day of week
+ */
 export const filterTodayEvents = (events: Evento[]): Evento[] => {
-  const today = new Date();
-  const todayStr = today.toISOString().split('T')[0]; // Format as YYYY-MM-DD
-  
-  return events.filter(event => {
-    // Handle different date formats
-    const eventDate = new Date(event.Fecha);
-    const eventDateStr = eventDate.toISOString().split('T')[0];
-    return eventDateStr === todayStr;
-  });
-};
+    const today = new Date();
+    const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const todayDayOfWeek = diasSemana[today.getDay()];
+    
+    console.log(`Día de la semana actual: ${todayDayOfWeek}`);
+    console.log(`Total de eventos guardados: ${events.length}`);
+    
+    // Filter events that match the current day of week
+    const filteredEvents = events.filter(event => {
+      // Use the diaSemana field if available, otherwise try to calculate it from Fecha
+      const eventDayOfWeek = event.diaSemana || (() => {
+        if (event.Fecha) {
+          try {
+            const fecha = new Date(event.Fecha);
+            return diasSemana[fecha.getDay()];
+          } catch (error) {
+            console.warn(`Error procesando fecha para evento ${event._id}:`, error);
+            return '';
+          }
+        }
+        return '';
+      })();
+      
+      const matches = eventDayOfWeek === todayDayOfWeek;
+      if (matches) {
+        console.log(`Evento coincide con día actual: ${event.Evento} (${eventDayOfWeek})`);
+      }
+      return matches;
+    });
+    
+    console.log(`Eventos filtrados para hoy (${todayDayOfWeek}): ${filteredEvents.length}`);
+    return filteredEvents;
+  };
 
 /**
  * Transform the event data to the format needed for the cards
