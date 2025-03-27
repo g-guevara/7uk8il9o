@@ -28,13 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>myapp</string>
-          <string>com.anon.test1.ioswidgetkit</string>
-        </array>
-      </dict>
-      <dict>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <string>exp+test1</string>
+          <string>com.anonymous.test1</string>
         </array>
       </dict>
     </array>

@@ -13,10 +13,7 @@
       "runtimeVersion": {
         "policy": "appVersion"
       },
-      "bundleIdentifier": "com.anon.test1.ioswidgetkit",
-      "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "bundleIdentifier": "com.anonymous.test1"
     },
     "android": {
       "adaptiveIcon": {
