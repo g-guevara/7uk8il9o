@@ -45,6 +45,7 @@ struct SimpleEntry: TimelineEntry {
 
 struct wigetWidgetEntryView : View {
     var entry: Provider.Entry
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -53,10 +54,11 @@ struct wigetWidgetEntryView : View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(entry.dayOfWeek)
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.gray)
+                        .foregroundColor(colorScheme == .dark ? .white : .gray)
                     
                     Text(entry.dayNumber)
                         .font(.system(size: 32, weight: .bold))
+                        .foregroundColor(colorScheme == .dark ? .white : .primary)
                         .padding(.top, -5)
                 }
                 .padding(.horizontal, 16)
@@ -90,17 +92,17 @@ struct ClassRowView: View {
             
             HStack {
                 Text(classInfo.time)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .font(.system(size: 14, weight: .semibold))
                 
                 Text(classInfo.name)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .font(.system(size: 14, weight: .semibold))
                 
                 Spacer()
                 
                 Text(classInfo.room)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .font(.system(size: 14, weight: .semibold))
             }
             .padding(.horizontal, 12)
@@ -115,15 +117,15 @@ struct wigetWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             wigetWidgetEntryView(entry: entry)
-                .containerBackground(.white, for: .widget)
+                .containerBackground(.background, for: .widget)
         }
         .configurationDisplayName("Horario de Clases")
         .description("Ver tu horario diario de clases")
-        .supportedFamilies([.systemSmall])
+        .supportedFamilies([.systemMedium])
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview(as: .systemMedium) {
     wigetWidget()
 } timeline: {
     SimpleEntry(
