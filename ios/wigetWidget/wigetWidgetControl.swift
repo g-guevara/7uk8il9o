@@ -1,6 +1,6 @@
 //
-//  simpleWidgetReactBlancControl.swift
-//  simpleWidgetReactBlanc
+//  wigetWidgetControl.swift
+//  wigetWidget
 //
 //  Created by Guillermo Guevara on 27-03-25.
 //
@@ -9,8 +9,8 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-struct simpleWidgetReactBlancControl: ControlWidget {
-    static let kind: String = "com.anonymous.test1.simpleWidgetReactBlanc"
+struct wigetWidgetControl: ControlWidget {
+    static let kind: String = "com.anonymous.test1.wigetWidget"
 
     var body: some ControlWidgetConfiguration {
         AppIntentControlConfiguration(
@@ -30,7 +30,7 @@ struct simpleWidgetReactBlancControl: ControlWidget {
     }
 }
 
-extension simpleWidgetReactBlancControl {
+extension wigetWidgetControl {
     struct Value {
         var isRunning: Bool
         var name: String
@@ -38,12 +38,12 @@ extension simpleWidgetReactBlancControl {
 
     struct Provider: AppIntentControlValueProvider {
         func previewValue(configuration: TimerConfiguration) -> Value {
-            simpleWidgetReactBlancControl.Value(isRunning: false, name: configuration.timerName)
+            wigetWidgetControl.Value(isRunning: false, name: configuration.timerName)
         }
 
         func currentValue(configuration: TimerConfiguration) async throws -> Value {
             let isRunning = true // Check if the timer is running
-            return simpleWidgetReactBlancControl.Value(isRunning: isRunning, name: configuration.timerName)
+            return wigetWidgetControl.Value(isRunning: isRunning, name: configuration.timerName)
         }
     }
 }

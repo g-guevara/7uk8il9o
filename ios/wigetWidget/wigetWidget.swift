@@ -1,6 +1,6 @@
 //
-//  simpleWidgetReactBlanc.swift
-//  simpleWidgetReactBlanc
+//  wigetWidget.swift
+//  wigetWidget
 //
 //  Created by Guillermo Guevara on 27-03-25.
 //
@@ -41,7 +41,7 @@ struct SimpleEntry: TimelineEntry {
     let configuration: ConfigurationAppIntent
 }
 
-struct simpleWidgetReactBlancEntryView : View {
+struct wigetWidgetEntryView : View {
     var entry: Provider.Entry
 
     var body: some View {
@@ -55,12 +55,12 @@ struct simpleWidgetReactBlancEntryView : View {
     }
 }
 
-struct simpleWidgetReactBlanc: Widget {
-    let kind: String = "simpleWidgetReactBlanc"
+struct wigetWidget: Widget {
+    let kind: String = "wigetWidget"
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
-            simpleWidgetReactBlancEntryView(entry: entry)
+            wigetWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
     }
@@ -81,7 +81,7 @@ extension ConfigurationAppIntent {
 }
 
 #Preview(as: .systemSmall) {
-    simpleWidgetReactBlanc()
+    wigetWidget()
 } timeline: {
     SimpleEntry(date: .now, configuration: .smiley)
     SimpleEntry(date: .now, configuration: .starEyes)

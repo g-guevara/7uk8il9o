@@ -1,6 +1,6 @@
 //
 //  AppIntent.swift
-//  simpleWidgetReactBlanc
+//  wigetWidget
 //
 //  Created by Guillermo Guevara on 27-03-25.
 //

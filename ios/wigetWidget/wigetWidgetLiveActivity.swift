@@ -1,6 +1,6 @@
 //
-//  simpleWidgetReactBlancLiveActivity.swift
-//  simpleWidgetReactBlanc
+//  wigetWidgetLiveActivity.swift
+//  wigetWidget
 //
 //  Created by Guillermo Guevara on 27-03-25.
 //
@@ -9,7 +9,7 @@ import ActivityKit
 import WidgetKit
 import SwiftUI
 
-struct simpleWidgetReactBlancAttributes: ActivityAttributes {
+struct wigetWidgetAttributes: ActivityAttributes {
     public struct ContentState: Codable, Hashable {
         // Dynamic stateful properties about your activity go here!
         var emoji: String
@@ -19,9 +19,9 @@ struct simpleWidgetReactBlancAttributes: ActivityAttributes {
     var name: String
 }
 
-struct simpleWidgetReactBlancLiveActivity: Widget {
+struct wigetWidgetLiveActivity: Widget {
     var body: some WidgetConfiguration {
-        ActivityConfiguration(for: simpleWidgetReactBlancAttributes.self) { context in
+        ActivityConfiguration(for: wigetWidgetAttributes.self) { context in
             // Lock screen/banner UI goes here
             VStack {
                 Text("Hello \(context.state.emoji)")
@@ -56,25 +56,25 @@ struct simpleWidgetReactBlancLiveActivity: Widget {
     }
 }
 
-extension simpleWidgetReactBlancAttributes {
-    fileprivate static var preview: simpleWidgetReactBlancAttributes {
-        simpleWidgetReactBlancAttributes(name: "World")
+extension wigetWidgetAttributes {
+    fileprivate static var preview: wigetWidgetAttributes {
+        wigetWidgetAttributes(name: "World")
     }
 }
 
-extension simpleWidgetReactBlancAttributes.ContentState {
-    fileprivate static var smiley: simpleWidgetReactBlancAttributes.ContentState {
-        simpleWidgetReactBlancAttributes.ContentState(emoji: "😀")
+extension wigetWidgetAttributes.ContentState {
+    fileprivate static var smiley: wigetWidgetAttributes.ContentState {
+        wigetWidgetAttributes.ContentState(emoji: "😀")
      }
      
-     fileprivate static var starEyes: simpleWidgetReactBlancAttributes.ContentState {
-         simpleWidgetReactBlancAttributes.ContentState(emoji: "🤩")
+     fileprivate static var starEyes: wigetWidgetAttributes.ContentState {
+         wigetWidgetAttributes.ContentState(emoji: "🤩")
      }
 }
 
-#Preview("Notification", as: .content, using: simpleWidgetReactBlancAttributes.preview) {
-   simpleWidgetReactBlancLiveActivity()
+#Preview("Notification", as: .content, using: wigetWidgetAttributes.preview) {
+   wigetWidgetLiveActivity()
 } contentStates: {
-    simpleWidgetReactBlancAttributes.ContentState.smiley
-    simpleWidgetReactBlancAttributes.ContentState.starEyes
+    wigetWidgetAttributes.ContentState.smiley
+    wigetWidgetAttributes.ContentState.starEyes
 }
