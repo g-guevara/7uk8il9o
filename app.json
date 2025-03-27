@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "runtimeVersion": {
         "policy": "appVersion"
-      }
+      },
+      "bundleIdentifier": "com.anonymous.test1"
     },
     "android": {
       "adaptiveIcon": {
