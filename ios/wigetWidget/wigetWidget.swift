@@ -1,56 +1,110 @@
-//
-//  wigetWidget.swift
-//  wigetWidget
-//
-//  Created by Guillermo Guevara on 27-03-25.
-//
-
 import WidgetKit
 import SwiftUI
 
-struct Provider: AppIntentTimelineProvider {
+struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: ConfigurationAppIntent())
+        SimpleEntry(date: Date(), dayOfWeek: "MON", dayNumber: "17", classes: [
+            ClassInfo(time: "8:30 AM", name: "Cálculo", room: "201-B"),
+            ClassInfo(time: "10 AM", name: "Economía", room: "323-C")
+        ])
     }
 
-    func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
-        SimpleEntry(date: Date(), configuration: configuration)
-    }
-    
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
-        var entries: [SimpleEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
-        }
-
-        return Timeline(entries: entries, policy: .atEnd)
+    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
+        let entry = SimpleEntry(date: Date(), dayOfWeek: "MON", dayNumber: "17", classes: [
+            ClassInfo(time: "8:30 AM", name: "Cálculo", room: "201-B"),
+            ClassInfo(time: "10 AM", name: "Economía", room: "323-C")
+        ])
+        completion(entry)
     }
 
-//    func relevances() async -> WidgetRelevances<ConfigurationAppIntent> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
+    func getTimeline(in context: Context, completion: @escaping (Timeline<SimpleEntry>) -> ()) {
+        // This would normally calculate the actual day and classes
+        // For now, we're just showing the static example from the photo
+        let entry = SimpleEntry(date: Date(), dayOfWeek: "MON", dayNumber: "17", classes: [
+            ClassInfo(time: "8:30 AM", name: "Cálculo", room: "201-B"),
+            ClassInfo(time: "10 AM", name: "Economía", room: "323-C")
+        ])
+        
+        let timeline = Timeline(entries: [entry], policy: .never)
+        completion(timeline)
+    }
+}
+
+struct ClassInfo {
+    let time: String
+    let name: String
+    let room: String
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
-    let configuration: ConfigurationAppIntent
+    let dayOfWeek: String
+    let dayNumber: String
+    let classes: [ClassInfo]
 }
 
 struct wigetWidgetEntryView : View {
     var entry: Provider.Entry
-
+    
     var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
+        VStack(alignment: .leading, spacing: 0) {
+            // Day header
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(entry.dayOfWeek)
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.gray)
+                    
+                    Text(entry.dayNumber)
+                        .font(.system(size: 32, weight: .bold))
+                        .padding(.top, -5)
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                
+                Spacer()
+            }
+            
+            Spacer()
+            
+            // Class list
+            VStack(spacing: 8) {
+                ForEach(entry.classes.indices, id: \.self) { index in
+                    let classInfo = entry.classes[index]
+                    ClassRowView(classInfo: classInfo)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
+        }
+    }
+}
 
-            Text("Favorite Emoji:")
-            Text(entry.configuration.favoriteEmoji)
+struct ClassRowView: View {
+    let classInfo: ClassInfo
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.green)
+            
+            HStack {
+                Text(classInfo.time)
+                    .foregroundColor(.white)
+                    .font(.system(size: 14, weight: .semibold))
+                
+                Text(classInfo.name)
+                    .foregroundColor(.white)
+                    .font(.system(size: 14, weight: .semibold))
+                
+                Spacer()
+                
+                Text(classInfo.room)
+                    .foregroundColor(.white)
+                    .font(.system(size: 14, weight: .semibold))
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
         }
     }
 }
@@ -59,30 +113,26 @@ struct wigetWidget: Widget {
     let kind: String = "wigetWidget"
 
     var body: some WidgetConfiguration {
-        AppIntentConfiguration(kind: kind, intent: ConfigurationAppIntent.self, provider: Provider()) { entry in
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
             wigetWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(.white, for: .widget)
         }
-    }
-}
-
-extension ConfigurationAppIntent {
-    fileprivate static var smiley: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "😀"
-        return intent
-    }
-    
-    fileprivate static var starEyes: ConfigurationAppIntent {
-        let intent = ConfigurationAppIntent()
-        intent.favoriteEmoji = "🤩"
-        return intent
+        .configurationDisplayName("Horario de Clases")
+        .description("Ver tu horario diario de clases")
+        .supportedFamilies([.systemSmall])
     }
 }
 
 #Preview(as: .systemSmall) {
     wigetWidget()
 } timeline: {
-    SimpleEntry(date: .now, configuration: .smiley)
-    SimpleEntry(date: .now, configuration: .starEyes)
+    SimpleEntry(
+        date: Date(),
+        dayOfWeek: "MON",
+        dayNumber: "17",
+        classes: [
+            ClassInfo(time: "8:30 AM", name: "Cálculo", room: "201-B"),
+            ClassInfo(time: "10 AM", name: "Economía", room: "323-C")
+        ]
+    )
 }
