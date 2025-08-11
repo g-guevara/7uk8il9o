@@ -1,97 +1,115 @@
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+// backend/server.js
+const express = require('express');
+const cors = require('cors');
+const { MongoClient } = require('mongodb');
+const pushNotificationsRouter = require('./routes/pushNotifications');
+const { initializeScheduledNotifications } = require('./scheduledNotifications');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+// MongoDB connection
+const MONGODB_URI = process.env.MONGODB_URI || 'your-mongodb-connection-string';
+let db;
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI, {
-  dbName: "uai-salas", // Asegura que esté conectando a la base de datos correcta
-})
-
-// Schema para la colección eventos (sin diaSemana por defecto)
-const EventoSchema = new mongoose.Schema({
-  Tipo: String,
-  Evento: String,
-  Fecha: String,
-  Inicio: String,
-  Fin: String,
-  Sala: String,
-  Edificio: String,
-  Campus: String,
-  fechaActualizacion: String
-}, { strict: false });
-
-// Schema para la colección all_eventos (incluye diaSemana)
-const AllEventoSchema = new mongoose.Schema({
-  Tipo: String,
-  Evento: String,
-  Fecha: String,
-  Inicio: String,
-  Fin: String,
-  Sala: String,
-  Edificio: String,
-  Campus: String,
-  fechaActualizacion: String,
-  diaSemana: String,
-  __v: Number
-}, { strict: false });
-
-const Evento = mongoose.model("Evento", EventoSchema, "eventos");
-const AllEvento = mongoose.model("AllEvento", AllEventoSchema, "all_eventos");
-
-// RUTA PARA OBTENER EVENTOS
-app.get("/eventos", async (req, res) => {
+// Connect to MongoDB
+async function connectToDatabase() {
   try {
-    const eventos = await Evento.find();
-    console.log(`Enviando ${eventos.length} eventos de la colección 'eventos'`);
+    const client = new MongoClient(MONGODB_URI, { useUnifiedTopology: true });
+    await client.connect();
+    db = client.db('your-database-name');
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+  }
+}
+
+// Routes for existing functionality
+app.get('/eventos', async (req, res) => {
+  try {
+    if (!db) {
+      return res.status(500).json({ error: 'Database not connected' });
+    }
     
-    // Procesar para añadir el día de la semana de forma dinámica
-    const processedEvents = eventos.map(event => {
-      const eventObj = event.toObject();
-      
-      // Calcular el día de la semana si no existe
-      if (!eventObj.diaSemana && eventObj.Fecha) {
-        try {
-          const fecha = new Date(eventObj.Fecha);
-          const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-          eventObj.diaSemana = diasSemana[fecha.getDay()];
-        } catch (error) {
-          console.error(`Error al procesar la fecha para evento ${eventObj._id}:`, error);
-        }
-      }
-      
-      return eventObj;
-    });
-    
-    res.json(processedEvents);
-  } catch (err) {
-    console.error("Error al obtener los datos:", err);
-    res.status(500).json({ error: "Error al obtener los datos" });
+    const eventos = await db.collection('eventos').find({}).toArray();
+    res.json(eventos);
+  } catch (error) {
+    console.error('Error fetching eventos:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// RUTA PARA OBTENER TODOS LOS EVENTOS
-app.get("/all_eventos", async (req, res) => {
+app.get('/all_eventos', async (req, res) => {
   try {
-    // Eliminar cualquier límite implícito, establecer un límite alto explícitamente
-    const allEventos = await AllEvento.find().limit(10000);
+    if (!db) {
+      return res.status(500).json({ error: 'Database not connected' });
+    }
     
-    // No es necesario procesar ya que all_eventos ya tiene diaSemana
-    console.log(`Enviando ${allEventos.length} eventos de la colección 'all_eventos'`);
+    const allEventos = await db.collection('all_eventos').find({}).toArray();
     res.json(allEventos);
-  } catch (err) {
-    console.error("Error al obtener los datos de all_eventos:", err);
-    res.status(500).json({ error: "Error al obtener los datos de all_eventos" });
+  } catch (error) {
+    console.error('Error fetching all_eventos:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// RUTA DE PRUEBA PARA VER SI EL SERVIDOR ESTÁ FUNCIONANDO
-app.get("/", (req, res) => {
-  res.send("Servidor funcionando en Vercel 🚀");
+// Add push notification routes
+app.use('/', pushNotificationsRouter);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    pushNotifications: 'enabled'
+  });
 });
 
-// Exportar `app` para Vercel
-module.exports = app;
+// Error handling middleware
+app.use((error, req, res, next) => {
+  console.error('Unhandled error:', error);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: error.message 
+  });
+});
+
+// Start server
+async function startServer() {
+  try {
+    // Connect to database first
+    await connectToDatabase();
+    
+    // Initialize scheduled notifications
+    initializeScheduledNotifications();
+    
+    // Start the server
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Health check: http://localhost:${PORT}/health`);
+      console.log('Silent push notifications enabled');
+    });
+  } catch (error) {
+    console.error('Error starting server:', error);
+    process.exit(1);
+  }
+}
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  process.exit(0);
+});
+
+// Start the application
+startServer();
