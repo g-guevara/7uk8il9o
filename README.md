@@ -1,6 +1,6 @@
 # API Documentation - UAI Salas Events
 
-Esta API proporciona acceso a los eventos y salas de la Universidad Adolfo Ibáñez.
+Esta API proporciona acceso a los eventos y salas de la Universidad Adolfo Ibáñez. Webscrapping acomulado de hoy.uai.cl
 
 ## Base URL
 ```
