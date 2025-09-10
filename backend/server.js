@@ -90,7 +90,7 @@ app.get("/all_eventos", async (req, res) => {
 
 // RUTA DE PRUEBA PARA VER SI EL SERVIDOR ESTÁ FUNCIONANDO
 app.get("/", (req, res) => {
-  res.send("Servidor funcionando en Vercel 🚀");
+  res.send("online ");
 });
 
 // Exportar `app` para Vercel
