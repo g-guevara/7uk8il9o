@@ -14,7 +14,7 @@ https://7uk8il9o.vercel.app
 GET /all_eventos
 ```
 
-**Descripción:** Retorna todos los eventos disponibles con información completa incluyendo el día de la semana.
+**Descripción:** Retorna todos los eventos disponibles (https://7uk8il9o.vercel.app/all_eventos) con información completa incluyendo el día de la semana.
 
 **Respuesta:**
 ```json
@@ -98,6 +98,8 @@ Los datos vienen sin filtros aplicados. Puedes filtrar por:
 - **Edificio:** A, B, C, D, E, F
 - **Horario:** Usando los campos Inicio y Fin
 
+Como es un webscapping hay varios campos que tienen errores, tener en cuenta que no son datos limpios
+
 ### Ejemplo de Filtrado por Campus
 ```javascript
 const eventos = await fetch('https://7uk8il9o.vercel.app/all_eventos')
@@ -125,7 +127,7 @@ const eventosLunes = eventos.filter(evento =>
 
 - La API no requiere autenticación
 - No hay límites de rate limiting actualmente
-- Los datos se actualizan periódicamente
+- Los datos se actualizan periódicamente todos los dias
 - Respuesta típica: ~10,000 eventos
 - Tiempo de respuesta promedio: 1-3 segundos
 
