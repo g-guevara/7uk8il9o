@@ -2,7 +2,7 @@
 
 Esta API proporciona acceso a los eventos y salas de la Universidad Adolfo Ibáñez. Webscrapping acomulado de hoy.uai.cl
 
-## Base URL
+## Base URL 
 ```
 https://7uk8il9o.vercel.app
 ```
